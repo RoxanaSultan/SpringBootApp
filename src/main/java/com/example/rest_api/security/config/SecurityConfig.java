@@ -31,7 +31,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         DefaultSecurityFilterChain build = http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/login/**", "/register", "/oauth2/**").permitAll()
+                        .requestMatchers("/", "/login/**", "/register", "/oauth2/**", "/user/**", "/my_albums", "all_albums").permitAll()
+                                .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         /* Dynamic trough AuthorizationManager */
                         .anyRequest().access(dynamicAuthorizationManager)
                         /* Hardcoded Examples */

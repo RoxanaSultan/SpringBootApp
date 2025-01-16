@@ -28,6 +28,14 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
         String requestUrl = context.getRequest().getRequestURI();
         String requestMethod = context.getRequest().getMethod();
 
+        // Public URLs that don't require permission checks
+        List<String> publicUrls = List.of("/", "/login", "/register", "/my_albums", "/all_albums");
+
+        // Allow access to public URLs
+        if (publicUrls.contains(requestUrl)) {
+            return new AuthorizationDecision(true);
+        }
+
         List<RoleEntity> roles = roleService.findAll();
 
         for (RoleEntity role : roles) {
@@ -36,15 +44,16 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
 
                 boolean hasPermission = role.getPermissions().stream()
                         .anyMatch(permission ->
-                                        pathMatcher.match(permission.getUrl(), requestUrl) &&
+                                pathMatcher.match(permission.getUrl(), requestUrl) &&
                                         permission.getHttp_method().equalsIgnoreCase(requestMethod));
-
 
                 if (hasPermission) {
                     return new AuthorizationDecision(true);
                 }
             }
         }
+
         return new AuthorizationDecision(false);
     }
+
 }
