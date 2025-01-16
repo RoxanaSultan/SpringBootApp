@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="Hibernate" />
+        <datasource-mapping>
+          <factory-entry name="RESTAPI" value="3394918b-c91e-4408-87c8-ebb9385636f9" />
+          <factory-entry name="entityManagerFactory" />
+          <factory-entry name="noname-a.xml@0" value="3394918b-c91e-4408-87c8-ebb9385636f9" />
+        </datasource-mapping>
+        <naming-strategy-map />
+      </configuration>
+    </facet>
+  </component>
+</module>

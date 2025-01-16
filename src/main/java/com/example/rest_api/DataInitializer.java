@@ -1,9 +1,9 @@
 package com.example.rest_api;
 
-import com.example.rest_api.database.model.PermissionEntity;
-import com.example.rest_api.database.model.Role;
-import com.example.rest_api.database.model.RoleEntity;
-import com.example.rest_api.database.model.UserEntity;
+import com.example.rest_api.database.primary.model.PermissionEntity;
+import com.example.rest_api.database.primary.model.Role;
+import com.example.rest_api.database.primary.model.RoleEntity;
+import com.example.rest_api.database.primary.model.UserEntity;
 import com.example.rest_api.service.PermissionService;
 import com.example.rest_api.service.RoleService;
 import com.example.rest_api.service.UserService;
@@ -44,7 +44,7 @@ public class DataInitializer implements ApplicationRunner {
             roleService.save(admin);
             for (String crudMethod : CRUD_METHODS) {
                 PermissionEntity permissionEntity = new PermissionEntity();
-                permissionEntity.setHttpMethod(crudMethod);
+                permissionEntity.setHttp_method(crudMethod);
                 permissionEntity.setUrl("/**");
                 permissionEntity.setRole(admin);
                 permissionService.save(permissionEntity);
@@ -55,7 +55,7 @@ public class DataInitializer implements ApplicationRunner {
         if(!isRoleUserInDb) {
             roleService.save(user);
             PermissionEntity permissionEntity = new PermissionEntity();
-            permissionEntity.setHttpMethod("GET");
+            permissionEntity.setHttp_method("GET");
             permissionEntity.setUrl("/home");
             permissionEntity.setRole(user);
             permissionService.save(permissionEntity);

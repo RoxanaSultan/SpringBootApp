@@ -1,8 +1,7 @@
-package com.example.rest_api.database.model;
+package com.example.rest_api.database.primary.model;
 
 import com.example.rest_api.security.AuthenticatedUser;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +30,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "email", unique = true, columnDefinition = "VARCHAR(255) CHECK (email ~* '^[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')")
     private String email;
 
-    @Column(name="isOAuthAccount")
+    @Column(name="isoauth_account")
     private Boolean isOAuthAccount;
 
     @Basic

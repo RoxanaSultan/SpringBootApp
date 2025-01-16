@@ -1,6 +1,6 @@
 package com.example.rest_api.security.config;
 
-import com.example.rest_api.database.model.RoleEntity;
+import com.example.rest_api.database.primary.model.RoleEntity;
 import com.example.rest_api.service.RoleService;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -37,7 +37,7 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
                 boolean hasPermission = role.getPermissions().stream()
                         .anyMatch(permission ->
                                         pathMatcher.match(permission.getUrl(), requestUrl) &&
-                                        permission.getHttpMethod().equalsIgnoreCase(requestMethod));
+                                        permission.getHttp_method().equalsIgnoreCase(requestMethod));
 
 
                 if (hasPermission) {
