@@ -1,8 +1,8 @@
 package com.example.rest_api.service;
 
-import com.example.rest_api.database.primary.model.UserEntity;
-import com.example.rest_api.database.primary.repository.RoleRepository;
-import com.example.rest_api.database.primary.repository.UserRepository;
+import com.example.rest_api.database.users.model.UserEntity;
+import com.example.rest_api.database.users.repository.RoleRepository;
+import com.example.rest_api.database.users.repository.UserRepository;
 import com.example.rest_api.security.AuthenticatedUser;
 import com.example.rest_api.security.PasswordGeneratorUtil;
 import org.slf4j.Logger;

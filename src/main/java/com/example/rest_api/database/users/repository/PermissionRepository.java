@@ -1,6 +1,6 @@
-package com.example.rest_api.database.primary.repository;
+package com.example.rest_api.database.users.repository;
 
-import com.example.rest_api.database.primary.model.PermissionEntity;
+import com.example.rest_api.database.users.model.PermissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

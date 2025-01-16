@@ -1,4 +1,4 @@
-package com.example.rest_api.database.primary.model;
+package com.example.rest_api.database.users.model;
 
 public enum Role {
     ADMIN,

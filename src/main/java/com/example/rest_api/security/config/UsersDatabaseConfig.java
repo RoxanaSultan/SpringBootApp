@@ -14,41 +14,40 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
 import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "com.example.rest_api.database.primary.repository",
-        entityManagerFactoryRef = "primaryEntityManagerFactory",
-        transactionManagerRef = "primaryTransactionManager"
+        basePackages = "com.example.rest_api.database.users.repository",
+        entityManagerFactoryRef = "usersEntityManagerFactory",
+        transactionManagerRef = "usersTransactionManager"
 )
-public class PrimaryDatabaseConfig {
+public class UsersDatabaseConfig {
 
     @Primary
-    @Bean(name = "primaryDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.primary")
-    public DataSource primaryDataSource() {
+    @Bean(name = "usersDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.users")
+    public DataSource usersDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Primary
-    @Bean(name = "primaryEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory(
+    @Bean(name = "usersEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean usersEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
-            @Qualifier("primaryDataSource") DataSource primaryDataSource) {
+            @Qualifier("usersDataSource") DataSource usersDataSource) {
         return builder
-                .dataSource(primaryDataSource)
-                .packages("com.example.rest_api.database.primary")
-                .persistenceUnit("primary")
+                .dataSource(usersDataSource)
+                .packages("com.example.rest_api.database.users.model") // Modelele pentru users
+                .persistenceUnit("users")
                 .build();
     }
 
     @Primary
-    @Bean(name = "primaryTransactionManager")
-    public PlatformTransactionManager primaryTransactionManager(
-            @Qualifier("primaryEntityManagerFactory") EntityManagerFactory primaryEntityManagerFactory) {
-        return new JpaTransactionManager(primaryEntityManagerFactory);
+    @Bean(name = "usersTransactionManager")
+    public PlatformTransactionManager usersTransactionManager(
+            @Qualifier("usersEntityManagerFactory") EntityManagerFactory usersEntityManagerFactory) {
+        return new JpaTransactionManager(usersEntityManagerFactory);
     }
 }

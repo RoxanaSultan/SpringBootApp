@@ -1,4 +1,4 @@
-package com.example.rest_api.database.secondary.model;
+package com.example.rest_api.database.resources.model;
 
 import jakarta.persistence.*;
 

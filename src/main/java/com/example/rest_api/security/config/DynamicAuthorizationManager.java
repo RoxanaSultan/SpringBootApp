@@ -1,6 +1,6 @@
 package com.example.rest_api.security.config;
 
-import com.example.rest_api.database.primary.model.RoleEntity;
+import com.example.rest_api.database.users.model.RoleEntity;
 import com.example.rest_api.service.RoleService;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;

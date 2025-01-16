@@ -1,9 +1,9 @@
 package com.example.rest_api;
 
-import com.example.rest_api.database.primary.model.PermissionEntity;
-import com.example.rest_api.database.primary.model.Role;
-import com.example.rest_api.database.primary.model.RoleEntity;
-import com.example.rest_api.database.primary.model.UserEntity;
+import com.example.rest_api.database.users.model.PermissionEntity;
+import com.example.rest_api.database.users.model.Role;
+import com.example.rest_api.database.users.model.RoleEntity;
+import com.example.rest_api.database.users.model.UserEntity;
 import com.example.rest_api.service.PermissionService;
 import com.example.rest_api.service.RoleService;
 import com.example.rest_api.service.UserService;
