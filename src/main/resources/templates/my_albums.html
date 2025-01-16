@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{user/user_layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>My Albums</title>
+    <style>
+        #albumModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+            text-align: center;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Welcome, <span th:text="${username}">User</span>!</h1>
+    <h2>Your Albums</h2>
+
+    <!-- Create Album Button -->
+    <button onclick="openModal()" class="button">Create Album</button>
+
+    <!-- Album List -->
+    <ul id="albumList">
+        <li th:each="album : ${albums}" th:text="${album.name}"></li>
+    </ul>
+
+    <!-- Modal for Creating Album -->
+    <div id="albumModal">
+        <div class="modal-content">
+            <h3>Create New Album</h3>
+            <input type="text" id="albumName" placeholder="Enter album name">
+            <br><br>
+            <button onclick="createAlbum()" class="button">OK</button>
+            <button onclick="closeModal()" class="button">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('albumModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('albumModal').style.display = 'none';
+            document.getElementById('albumName').value = '';
+        }
+
+        function createAlbum() {
+            const albumName = document.getElementById('albumName').value;
+            if (albumName) {
+                const albumList = document.getElementById('albumList');
+                const li = document.createElement('li');
+                li.textContent = albumName;
+                albumList.appendChild(li);
+                closeModal();
+                // TODO: Send albumName to the server for saving in the database
+            } else {
+                alert('Please enter an album name.');
+            }
+        }
+    </script>
+</div>
+</body>
+</html>
