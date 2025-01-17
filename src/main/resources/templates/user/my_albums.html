@@ -3,7 +3,7 @@
       layout:decorate="~{user/user_layout.html}">
 <head>
     <meta charset="UTF-8">
-    <title>Photo Albums</title>
+    <title>My Photo Albums</title>
     <style>
         #albumModal {
             display: none;
@@ -49,6 +49,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: inline-block;
             margin-right: 20px;
+            cursor: pointer;
         }
 
         .card-img-top {
@@ -84,6 +85,20 @@
             display: flex;
             flex-wrap: wrap;
         }
+
+        .delete-btn {
+            background-color: #e53e3e; /* Red background */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c53030; /* Darker red on hover */
+        }
     </style>
 </head>
 <body>
@@ -95,11 +110,15 @@
     <!-- Album List -->
     <ul id="albumList">
         <li th:each="album : ${albums}">
-            <div class="card">
-<!--                <img src="/static/images/album_placeholder.png" class="card-img-top" />-->
+<!--            <div class="card" th:attr="onclick='window.location.href=\'/album_photos/\' + ${album.id}'">-->
+            <div class="card" onclick="window.location.href='/album_photos/'">
+                <!-- Placeholder image can be uncommented when used -->
+                <!-- <img src="/static/images/album_placeholder.png" class="card-img-top" /> -->
                 <div class="card-body">
                     <h5 class="card-title" th:text="${album.name}">Album Name</h5>
                 </div>
+                <!-- Delete Button -->
+                <button class="delete-btn" onclick="deleteAlbum(event, ${album.id})">Delete</button>
             </div>
         </li>
     </ul>
@@ -144,6 +163,24 @@
                 xhr.send(data);
             } else {
                 alert('Please enter an album name.');
+            }
+        }
+
+        function deleteAlbum(event, albumId) {
+            event.stopPropagation(); // Previne redirecționarea când se apasă pe butonul de delete
+
+            if (confirm("Are you sure you want to delete this album?")) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('DELETE', '/api/albums/delete/' + albumId, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        alert('Album deleted successfully');
+                        location.reload(); // Reîncarcă pagina pentru a reflecta schimbările
+                    } else if (xhr.readyState === 4) {
+                        alert('Error deleting album');
+                    }
+                };
+                xhr.send();
             }
         }
     </script>
