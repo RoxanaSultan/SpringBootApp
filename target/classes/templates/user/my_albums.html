@@ -110,15 +110,12 @@
     <!-- Album List -->
     <ul id="albumList">
         <li th:each="album : ${albums}">
-<!--            <div class="card" th:attr="onclick='window.location.href=\'/album_photos/\' + ${album.id}'">-->
-            <div class="card" onclick="window.location.href='/album_photos/'">
-                <!-- Placeholder image can be uncommented when used -->
-                <!-- <img src="/static/images/album_placeholder.png" class="card-img-top" /> -->
+            <div class="card" onclick="window.location.href='/album_photos/' + [[${album.id}]]">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${album.name}">Album Name</h5>
                 </div>
                 <!-- Delete Button -->
-                <button class="delete-btn" onclick="deleteAlbum(event, ${album.id})">Delete</button>
+                <button class="delete-btn" th:attr="onclick='deleteAlbum(event, ' + ${album.id} + ')'" >Delete</button>
             </div>
         </li>
     </ul>
@@ -168,10 +165,11 @@
 
         function deleteAlbum(event, albumId) {
             event.stopPropagation(); // Previne redirecționarea când se apasă pe butonul de delete
-
+            alert('Deleting album with ID: ' + albumId);
             if (confirm("Are you sure you want to delete this album?")) {
                 const xhr = new XMLHttpRequest();
-                xhr.open('DELETE', '/api/albums/delete/' + albumId, true);
+                xhr.open('DELETE', '/api/albums/delete', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         alert('Album deleted successfully');
@@ -180,9 +178,11 @@
                         alert('Error deleting album');
                     }
                 };
-                xhr.send();
+                const data = JSON.stringify({ albumId: albumId });
+                xhr.send(data); // Trimite albumId în corpul request-ului
             }
         }
+
     </script>
 </div>
 </body>

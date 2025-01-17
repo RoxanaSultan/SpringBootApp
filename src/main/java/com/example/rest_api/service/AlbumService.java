@@ -55,6 +55,23 @@ public class AlbumService {
         userRepository.save(user);
 
         // Asociază rolul direct în baza de date
-        roleRepository.associateRoleToUser(user.getId(), adminRole.getId());
+//        roleRepository.associateRoleToUser(user.getId(), adminRole.getId());
+    }
+
+    public void deleteAlbum(int albumId) {
+        String albumName = String.valueOf(albumRepository.findById(albumId));
+        albumRepository.deleteById(albumId);
+
+        String adminRoleName = albumName.toUpperCase() + "_ALBUM_ADMIN";
+        String userRoleName = albumName.toUpperCase() + "_ALBUM";
+
+        Integer adminRoleId = roleRepository.findRoleByName(adminRoleName);
+        Integer userRoleId = roleRepository.findRoleByName(userRoleName);
+
+        roleRepository.deleteAssociatedRole(adminRoleId);
+        roleRepository.deleteAssociatedRole(userRoleId);
+
+        roleRepository.deleteRole(adminRoleName);
+        roleRepository.deleteRole(userRoleName);
     }
 }

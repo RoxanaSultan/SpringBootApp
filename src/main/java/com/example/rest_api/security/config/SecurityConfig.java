@@ -35,6 +35,7 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers("/user/**").hasAuthority("USER")
                                 .requestMatchers("/api/albums/create").authenticated()
+                                .requestMatchers("/api/albums/delete").authenticated()
                         /* Dynamic trough AuthorizationManager */
                         .anyRequest().access(dynamicAuthorizationManager)
                         /* Hardcoded Examples */

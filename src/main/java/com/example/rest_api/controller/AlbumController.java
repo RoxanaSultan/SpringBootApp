@@ -8,10 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Map;
@@ -56,5 +53,28 @@ public class AlbumController {
         albumService.createAlbum(albumName, user);
 
         return "Album created successfully!";
+    }
+
+    @DeleteMapping("/api/albums/delete")
+    @ResponseBody
+    public String deleteAlbum(@RequestBody Map<String, String> request, Principal principal) {
+        // Extragem albumId din request
+        String albumIdString = request.get("albumId");
+        if (albumIdString == null) {
+            return "Album ID is missing in request.";
+        }
+
+        // Convertim albumId la integer
+        int albumId = Integer.parseInt(albumIdString);
+
+        // Verificăm dacă utilizatorul autenticat poate șterge albumul (optional)
+//            String username = principal.getName();
+//            if (username == null || !albumService.canDeleteAlbum(albumId, username)) {
+//                return "You don't have permission to delete this album.";
+//            }
+
+        // Ștergem albumul
+        albumService.deleteAlbum(albumId);
+        return "Album deleted successfully.";
     }
 }

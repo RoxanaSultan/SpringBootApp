@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
     public List<RoleEntity> findAllByName(String name);
+
     Boolean existsByName(String name);
 
     Optional<RoleEntity> findByName(String name);
@@ -21,4 +22,15 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
     @Modifying
     @Query(value = "INSERT INTO app_users_roles (app_user_id, role_id) VALUES (:userId, :roleId)", nativeQuery = true)
     void associateRoleToUser(Long userId, Long roleId);
+
+    @Modifying
+    @Query(value = "DELETE FROM role r WHERE r.name = :role_name", nativeQuery = true)
+    void deleteRole(String role_name);
+
+    @Query(value = "SELECT id FROM role r WHERE r.name = :role_name", nativeQuery = true)
+    Integer findRoleByName(String role_name);
+
+    @Modifying
+    @Query(value = "DELETE FROM app_users_roles ar WHERE ar.role_id = :roleId", nativeQuery = true)
+    void deleteAssociatedRole(Integer roleId);
 }
