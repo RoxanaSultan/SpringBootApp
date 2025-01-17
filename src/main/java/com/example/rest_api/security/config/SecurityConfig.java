@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login/**", "/register", "/oauth2/**", "/user/**").permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers("/user/**").hasAuthority("USER")
+                                .requestMatchers("/api/albums/create").authenticated()
                         /* Dynamic trough AuthorizationManager */
                         .anyRequest().access(dynamicAuthorizationManager)
                         /* Hardcoded Examples */

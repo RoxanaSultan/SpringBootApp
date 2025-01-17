@@ -53,12 +53,9 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <!-- Search Bar -->
-    <input type="text" id="searchBar" class="search-bar" placeholder="Search albums..." onkeyup="searchAlbums()">
-
     <!-- Create Album Button -->
     <button onclick="openModal()" class="button">Create Album</button>
-
+    <br><br>
     <!-- Album List -->
     <ul id="albumList">
         <li th:each="album : ${albums}" th:text="${album.name}"></li>
@@ -88,44 +85,23 @@
         function createAlbum() {
             const albumName = document.getElementById('albumName').value;
             if (albumName) {
-                const albumList = document.getElementById('albumList');
-                const li = document.createElement('li');
-                li.textContent = albumName;
-                albumList.appendChild(li);
-                closeModal();
-
                 // Send the album name to the server using AJAX
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', '/api/albums/create', true);  // The updated endpoint
+                xhr.open('POST', '/api/albums/create', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4 && xhr.status === 201) {
-                        // Handle success
-                        console.log('Album created successfully');
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        alert('Album created successfully');
+                        location.reload();
                     } else if (xhr.readyState === 4) {
-                        // Handle error
                         alert('Error creating album');
                     }
                 };
-                const data = JSON.stringify({ name: albumName });  // Sending the album name as JSON
+                const data = JSON.stringify({ name: albumName });
                 xhr.send(data);
             } else {
                 alert('Please enter an album name.');
             }
-        }
-
-        // Search function
-        function searchAlbums() {
-            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
-            const albums = document.querySelectorAll('#albumList li');
-            albums.forEach(function(album) {
-                const albumName = album.textContent.toLowerCase();
-                if (albumName.indexOf(searchTerm) === -1) {
-                    album.style.display = 'none'; // Hide non-matching albums
-                } else {
-                    album.style.display = 'block'; // Show matching albums
-                }
-            });
         }
     </script>
 </div>
