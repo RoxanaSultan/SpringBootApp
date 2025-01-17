@@ -33,9 +33,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             response.sendRedirect("/admin/dashboard");
         } else if (authorities.contains(new SimpleGrantedAuthority(Role.USER.name()))) {
             logger.info("redirecting to home endpoint");
-            response.sendRedirect("/home");
+            response.sendRedirect("/user/my_albums");
         } else {
-            response.sendRedirect("/home");
+            response.sendRedirect("/user/my_albums");
         }
     }
 }

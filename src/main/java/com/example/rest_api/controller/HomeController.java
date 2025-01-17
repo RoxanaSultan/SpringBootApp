@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/home")
+@RequestMapping("/user/home")
 public class HomeController {
     UserRepository userRepository;
     private Logger logger = LoggerFactory.getLogger(HomeController.class);
