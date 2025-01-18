@@ -110,7 +110,6 @@
     <!-- Album List -->
     <ul id="albumList">
         <li th:each="album : ${albums}">
-<!--            <div class="card" onclick="window.location.href='/album_photos_admin'">-->
             <div class="card" th:onclick="'window.location.href=\'/album_photos_admin/' + ${album.id} + '\''">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${album.name}">Album Name</h5>

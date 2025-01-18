@@ -86,9 +86,8 @@
     <ul id="albumPhotosList">
         <li th:each="photo : ${photos}">
             <div class="card">
-                <img th:src="@{/images/{path}(path=${photo.imagePath})}" alt="Photo" class="card-img-top"/>
+                <img th:src="@{/api/photos/{id}(id=${photo.id})}" alt="Photo" class="card-img-top"/>
                 <div class="card-body">
-                    <h5 class="card-title" th:text="${photo.name}">Photo Name</h5>
                     <button class="button" th:onclick="'deletePhoto(' + ${photo.id} + ')'">Delete</button>
                 </div>
             </div>
@@ -118,7 +117,6 @@
         function addPhoto() {
             const photoFile = document.getElementById('photoFile').files[0];
             const albumId = window.location.pathname.split('/')[2];
-            alert("Album ID: " + albumId);
             if (photoFile) {
                 const formData = new FormData();
                 formData.append('file', photoFile);

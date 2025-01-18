@@ -5,6 +5,8 @@ import com.example.rest_api.database.resources.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PhotoService {
 
@@ -30,5 +32,9 @@ public class PhotoService {
     // Șterge o poză după ID
     public void deletePhoto(int photoId) {
         photoRepository.deleteById(photoId);  // Apelează repository-ul pentru a șterge poza
+    }
+
+    public PhotoEntity getPhotoById(int photoId) {
+        return photoRepository.findById(photoId).orElse(null);
     }
 }
