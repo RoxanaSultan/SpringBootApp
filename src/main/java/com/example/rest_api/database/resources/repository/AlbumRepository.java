@@ -15,4 +15,7 @@ public interface AlbumRepository extends JpaRepository<AlbumEntity, Integer> {
 
     @Query(value = "SELECT name FROM albums WHERE id = :albumId", nativeQuery = true)
     String findNameById(int albumId);
+
+
+//    Iterable<AlbumEntity> findAlbums(Long user_id);
 }

@@ -9,6 +9,7 @@ import com.example.rest_api.database.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -78,5 +79,19 @@ public class AlbumService {
 
     public Optional<AlbumEntity> findAlbumById(Integer albumId) {
         return albumRepository.findById(albumId);
+    }
+
+    public Iterable<AlbumEntity> findAlbums(UserEntity user) {
+        Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
+        List<AlbumEntity> albums = new ArrayList<>();
+        for (Long roleId : roleIds) {
+            String roleName = roleRepository.findRoleName(roleId);
+            if (roleName.endsWith("_ALBUM_ADMIN")) {
+                String albumName = roleName.substring(0, roleName.length() - 12);
+                albums.add(albumRepository.findByName(albumName).orElse(null));
+            }
+        }
+        return albums;
+//        return albumRepository.findAlbums(user.getId());
     }
 }

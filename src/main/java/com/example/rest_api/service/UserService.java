@@ -93,4 +93,8 @@ public class UserService extends OidcUserService implements UserDetailsService {
     public List<UserEntity> findAll() {
         return this.userRepository.findAll();
     }
+
+    public UserEntity findUserByEmail(String userEmail) {
+        return this.userRepository.findByEmail(userEmail).orElse(null);
+    }
 }

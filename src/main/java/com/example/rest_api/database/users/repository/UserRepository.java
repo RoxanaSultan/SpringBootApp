@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
 
     Boolean existsByEmail(String email);
+
+    @Query(value = "SELECT role_id FROM app_users_roles WHERE app_user_id=:id", nativeQuery = true)
+    Iterable<Long> findAdminRoles(Long id);
 }

@@ -1,8 +1,11 @@
 package com.example.rest_api.controller;
 
 import com.example.rest_api.database.users.model.UserEntity;
+import com.example.rest_api.security.AuthenticatedUser;
 import com.example.rest_api.service.AlbumService;
 import com.example.rest_api.database.users.repository.UserRepository;
+import com.example.rest_api.service.RoleService;
+import com.example.rest_api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,15 +21,24 @@ public class AlbumController {
 
     @Autowired
     private AlbumService albumService;
+    private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
 
     @GetMapping("/user/my_albums")
-    public String myAlbums(Model model) {
-        model.addAttribute("albums", albumService.findAll());
+    public String myAlbums(Model model, Principal principal) {
+        UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
+        model.addAttribute("albums", albumService.findAlbums(user));
         return "user/my_albums";
     }
+
+//    @GetMapping("/user/my_albums")
+//    public String myAlbums(Model model, Principal principal) {
+//        model.addAttribute("albums", albumService.findAll());
+//        return "user/my_albums";
+//    }
+
 
     @GetMapping("/user/all_albums")
     public String allAlbums(Model model) {
@@ -50,6 +62,7 @@ public class AlbumController {
             return "User not found!";
         }
 
+        albumName = albumName.toUpperCase().trim();
         albumService.createAlbum(albumName, user);
 
         return "Album created successfully!";

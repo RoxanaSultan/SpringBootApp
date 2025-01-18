@@ -33,4 +33,7 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
     @Modifying
     @Query(value = "DELETE FROM app_users_roles ar WHERE ar.role_id = :roleId", nativeQuery = true)
     void deleteAssociatedRole(Integer roleId);
+
+    @Query(value = "SELECT name FROM role r WHERE r.id = :roleId", nativeQuery = true)
+    String findRoleName(Long roleId);
 }
