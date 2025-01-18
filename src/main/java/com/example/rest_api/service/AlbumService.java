@@ -59,7 +59,7 @@ public class AlbumService {
     }
 
     public void deleteAlbum(int albumId) {
-        String albumName = String.valueOf(albumRepository.findById(albumId));
+        String albumName = albumRepository.findNameById(albumId);
         albumRepository.deleteById(albumId);
 
         String adminRoleName = albumName.toUpperCase() + "_ALBUM_ADMIN";

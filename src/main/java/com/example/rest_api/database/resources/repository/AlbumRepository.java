@@ -12,4 +12,7 @@ import java.util.Optional;
 @Repository
 public interface AlbumRepository extends JpaRepository<AlbumEntity, Integer> {
     Optional<AlbumEntity> findByName(String name);
+
+    @Query(value = "SELECT name FROM albums WHERE id = :albumId", nativeQuery = true)
+    String findNameById(int albumId);
 }
