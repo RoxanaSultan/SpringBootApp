@@ -3,39 +3,49 @@ package com.example.rest_api.controller;
 import com.example.rest_api.database.resources.model.PhotoEntity;
 import com.example.rest_api.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.ResponseEntity;
 
-@RestController
-@RequestMapping("/api/photos")
+@Controller
 public class PhotoController {
 
     @Autowired
     private PhotoService photoService;
 
-    // Endpoint pentru a adăuga o fotografie
-    @PostMapping("/add")
-    public ResponseEntity<String> addPhoto(@RequestParam("file") MultipartFile file,
-                                           @RequestParam("albumId") int albumId) {
+    // GET: Obține pozele din album
+    @GetMapping("/album/{albumId}")
+    public String getPhotosByAlbum(@PathVariable("albumId") int albumId, Model model) {
+        model.addAttribute("photos", photoService.findPhotosByAlbumId(albumId));
+        return "album/photos"; // Vezi că se folosește template-ul album/photos
+    }
+
+    // POST: Adaugă o poză în album
+    @PostMapping("/api/photos/add")
+    public String addPhoto(@RequestParam("file") MultipartFile file,
+                           @RequestParam("albumId") int albumId) {
         try {
-            // Convertim fișierul într-un array de byte-uri și îl salvăm în baza de date
-            byte[] imageData = file.getBytes();
-            photoService.savePhoto(imageData, albumId);
-            return ResponseEntity.ok("Photo added successfully");
+            // Salvează poza
+            byte[] imageData = file.getBytes(); // Transformă fișierul într-un array de bytes
+            PhotoEntity photoEntity = photoService.addPhoto(imageData, albumId);
+            return "redirect:/album/" + albumId + "/photos"; // Redirect către albumul cu pozele
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error adding photo");
+            e.printStackTrace();
+            return "error"; // Sau o altă pagină de eroare
         }
     }
 
-    // Endpoint pentru a șterge o fotografie
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deletePhoto(@PathVariable Integer id) {
+    // DELETE: Șterge o poză din album
+    @DeleteMapping("/api/photos/delete/{id}")
+    @ResponseBody
+    public String deletePhoto(@PathVariable("id") int id) {
         try {
             photoService.deletePhoto(id);
-            return ResponseEntity.ok("Photo deleted successfully");
+            return "success"; // Poți returna un mesaj de succes sau status code
         } catch (Exception e) {
-            return ResponseEntity.status(404).body("Photo not found");
+            e.printStackTrace();
+            return "error";
         }
     }
 }

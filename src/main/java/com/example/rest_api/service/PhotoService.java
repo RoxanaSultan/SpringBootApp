@@ -11,19 +11,24 @@ public class PhotoService {
     @Autowired
     private PhotoRepository photoRepository;
 
-    // Metodă pentru a salva o fotografie
-    public void savePhoto(byte[] imageData, int albumId) {
-        // Creăm un obiect PhotoEntity și îl salvăm în baza de date
-        PhotoEntity photo = new PhotoEntity();
-        photo.setAlbumId(albumId);
-        photo.setImageData(imageData);
-        photoRepository.save(photo);
+    // Adaugă o poză nouă
+    public PhotoEntity addPhoto(byte[] imageData, int albumId) {
+        // Creează obiectul PhotoEntity
+        PhotoEntity photoEntity = new PhotoEntity();
+        photoEntity.setAlbumId(albumId);  // Setează albumId-ul
+        photoEntity.setImageData(imageData);  // Setează datele imaginii (în bytes)
+
+        // Salvează entitatea Photo în baza de date
+        return photoRepository.save(photoEntity);  // Returnează poza salvată
     }
 
-    // Metodă pentru a șterge o fotografie
-    public void deletePhoto(Integer id) throws Exception {
-        PhotoEntity photo = photoRepository.findById(id)
-                .orElseThrow(() -> new Exception("Photo not found"));
-        photoRepository.delete(photo);
+    // Găsește pozele dintr-un album după albumId
+    public Iterable<PhotoEntity> findPhotosByAlbumId(int albumId) {
+        return photoRepository.findByAlbumId(albumId);  // Apelează metoda repository-ului pentru a găsi pozele
+    }
+
+    // Șterge o poză după ID
+    public void deletePhoto(int photoId) {
+        photoRepository.deleteById(photoId);  // Apelează repository-ul pentru a șterge poza
     }
 }
