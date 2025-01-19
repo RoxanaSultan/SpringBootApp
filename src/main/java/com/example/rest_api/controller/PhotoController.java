@@ -17,12 +17,6 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
-    // GET: Obține pozele din album
-//    @GetMapping("/album/{albumId}")
-//    public String getPhotosByAlbum(@PathVariable("albumId") int albumId, Model model) {
-//        model.addAttribute("photos", photoService.findPhotosByAlbumId(albumId));
-//        return "album/photos"; // Vezi că se folosește template-ul album/photos
-//    }
     @GetMapping("/album_photos_admin/{albumId}")
     public String getPhotosByAlbum(@PathVariable("albumId") int albumId, Model model) {
         System.out.println("I am here with albumId: " + albumId);  // Verifică dacă ajunge în funcție
@@ -30,6 +24,15 @@ public class PhotoController {
         model.addAttribute("photos", photoService.findPhotosByAlbumId(albumId));
 
         return "/user/album_photos_admin";  // Numele corect al template-ului
+    }
+
+    @GetMapping("/album_photos_user/{albumId}")
+    public String getPhotosByAlbumUser(@PathVariable("albumId") int albumId, Model model) {
+        System.out.println("I am here with albumId: " + albumId);  // Verifică dacă ajunge în funcție
+
+        model.addAttribute("photos", photoService.findPhotosByAlbumId(albumId));
+
+        return "/user/album_photos_user";  // Numele corect al template-ului
     }
 
     // POST: Adaugă o poză în album
