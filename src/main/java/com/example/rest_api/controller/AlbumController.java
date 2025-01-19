@@ -26,67 +26,60 @@ public class AlbumController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/user/my_albums")
-    public String myAlbums(Model model, Principal principal) {
-        UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
-        model.addAttribute("albums", albumService.findAlbums(user));
-        return "user/my_albums";
+    @GetMapping("/albums")
+    public String albums(Integer albumId, Model model, Principal principal) {
+//        UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
+//
+//        if (!albumService.canAddPicture(albumId, user)) {
+//            model.addAttribute("canAdd", false);
+//        } else {
+//            model.addAttribute("canAdd", true);
+//        }
+//
+//        if (!albumService.canDelete(albumId, user)) {
+//            model.addAttribute("canDelete", false);
+//        } else {
+//            model.addAttribute("canDelete", true);
+//        }
+
+        return "/albums";
     }
 
-//    @GetMapping("/user/my_albums")
-//    public String myAlbums(Model model, Principal principal) {
-//        model.addAttribute("albums", albumService.findAll());
-//        return "user/my_albums";
-//    }
-
-
-    @GetMapping("/user/all_albums")
-    public String allAlbums(Model model) {
-        model.addAttribute("albums", albumService.findAll());
-        return "user/all_albums";
-    }
-
-    @PostMapping("/api/albums/create")
+    @PostMapping("/home/create")
     @ResponseBody
     public String createAlbum(@RequestBody Map<String, String> request, Principal principal) {
         String albumName = request.get("name");
+        albumName = albumName.toUpperCase().trim();
+        if (albumService.findByName(albumName).isPresent()) {
+            return "Album name already exists!";
+        }
 
         if (albumName == null || albumName.isEmpty()) {
             return "Album name cannot be empty!";
         }
 
-        // Obține utilizatorul autentificat
         UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
 
         if (user == null) {
             return "User not found!";
         }
 
-        albumName = albumName.toUpperCase().trim();
         albumService.createAlbum(albumName, user);
 
         return "Album created successfully!";
     }
 
-    @DeleteMapping("/api/albums/delete")
+    @DeleteMapping("/home/delete")
     @ResponseBody
     public String deleteAlbum(@RequestBody Map<String, String> request, Principal principal) {
-        // Extragem albumId din request
         String albumIdString = request.get("albumId");
+
         if (albumIdString == null) {
             return "Album ID is missing in request.";
         }
 
-        // Convertim albumId la integer
         int albumId = Integer.parseInt(albumIdString);
 
-        // Verificăm dacă utilizatorul autenticat poate șterge albumul (optional)
-//            String username = principal.getName();
-//            if (username == null || !albumService.canDeleteAlbum(albumId, username)) {
-//                return "You don't have permission to delete this album.";
-//            }
-
-        // Ștergem albumul
         albumService.deleteAlbum(albumId);
         return "Album deleted successfully.";
     }

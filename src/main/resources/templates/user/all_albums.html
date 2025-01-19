@@ -1,75 +1,75 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{user/user_layout.html}">
-<head>
-    <meta charset="UTF-8">
-    <title>All Photo Albums</title>
-    <style>
-        .card {
-            width: 18rem;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            margin-right: 20px;
-            cursor: pointer;
-        }
-        .card-body {
-            padding: 15px;
-            text-align: center;
-        }
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .search-bar {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 0.375rem;
-            font-size: 16px;
-        }
-        #albumList {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap;
-        }
-    </style>
-</head>
-<body>
-<div layout:fragment="content">
-    <!-- Search Bar -->
-    <input type="text" id="searchBar" class="search-bar" placeholder="Search albums..." onkeyup="searchAlbums()">
-    <br><br>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{user/user_layout.html}">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>All Photo Albums</title>-->
+<!--    <style>-->
+<!--        .card {-->
+<!--            width: 18rem;-->
+<!--            margin-bottom: 20px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);-->
+<!--            display: inline-block;-->
+<!--            margin-right: 20px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        .card-body {-->
+<!--            padding: 15px;-->
+<!--            text-align: center;-->
+<!--        }-->
+<!--        .card-title {-->
+<!--            font-size: 1.2rem;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        .search-bar {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            margin-bottom: 20px;-->
+<!--            border: 1px solid #ccc;-->
+<!--            border-radius: 0.375rem;-->
+<!--            font-size: 16px;-->
+<!--        }-->
+<!--        #albumList {-->
+<!--            list-style: none;-->
+<!--            padding: 0;-->
+<!--            display: flex;-->
+<!--            flex-wrap: wrap;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div layout:fragment="content">-->
+<!--    &lt;!&ndash; Search Bar &ndash;&gt;-->
+<!--    <input type="text" id="searchBar" class="search-bar" placeholder="Search albums..." onkeyup="searchAlbums()">-->
+<!--    <br><br>-->
 
-    <!-- Album List -->
-    <ul id="albumList">
-        <li th:each="album : ${albums}">
-            <div class="card" th:onclick="'window.location.href=\'/album_photos_user/' + ${album.id} + '\''">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${album.name}">Album Name</h5>
-                </div>
-            </div>
-        </li>
-    </ul>
-    <script>
-        // Search function
-        function searchAlbums() {
-            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
-            const albums = document.querySelectorAll('#albumList li');
-            albums.forEach(function(album) {
-                const albumName = album.textContent.toLowerCase();
-                if (albumName.indexOf(searchTerm) === -1) {
-                    album.style.display = 'none'; // Hide non-matching albums
-                } else {
-                    album.style.display = 'block'; // Show matching albums
-                }
-            });
-        }
-    </script>
-</div>
-</body>
-</html>
+<!--    &lt;!&ndash; Album List &ndash;&gt;-->
+<!--    <ul id="albumList">-->
+<!--        <li th:each="album : ${albums}">-->
+<!--            <div class="card" th:onclick="'window.location.href=\'/album_photos_user/' + ${album.id} + '\''">-->
+<!--                <div class="card-body">-->
+<!--                    <h5 class="card-title" th:text="${album.name}">Album Name</h5>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </li>-->
+<!--    </ul>-->
+<!--    <script>-->
+<!--        // Search function-->
+<!--        function searchAlbums() {-->
+<!--            const searchTerm = document.getElementById('searchBar').value.toLowerCase();-->
+<!--            const albums = document.querySelectorAll('#albumList li');-->
+<!--            albums.forEach(function(album) {-->
+<!--                const albumName = album.textContent.toLowerCase();-->
+<!--                if (albumName.indexOf(searchTerm) === -1) {-->
+<!--                    album.style.display = 'none'; // Hide non-matching albums-->
+<!--                } else {-->
+<!--                    album.style.display = 'block'; // Show matching albums-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+<!--    </script>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->

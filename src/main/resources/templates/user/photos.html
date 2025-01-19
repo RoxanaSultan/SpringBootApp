@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{user/user_layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Album Photos</title>
+    <style>
+        .card {
+            width: 18rem;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-right: 20px;
+            vertical-align: top;
+        }
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px 10px 10px 10px;
+        }
+        .card-body {
+            padding: 15px;
+            text-align: center;
+        }
+        .add-photo-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4c51bf;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+        }
+        .add-photo-btn:hover {
+            background-color: #434190;
+        }
+        .delete-button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+        }
+        .delete-button:hover {
+            background-color: #c53030;
+        }
+        #albumPhotosList {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            margin: 100px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #addPhotoModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Add Photo Button -->
+    <button th:if="${canAdd}" class="add-photo-btn" th:attr="onclick='openAddPhotoModal()'">Add Photo</button>
+
+    <!-- Album Photos List -->
+    <ul id="albumPhotosList">
+        <li th:each="photo : ${photos}">
+            <div class="card-body">
+                <img th:src="@{/photos/{id}(id=${photo.id})}" alt="Photo" class="card-img-top"/>
+                <button th:if="${canDelete}" class="delete-button" th:attr="onclick='deletePhoto(' + ${photo.id} + ')'">Delete</button>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Modal for Adding Photo -->
+    <div id="addPhotoModal">
+        <div class="modal-content">
+            <h3>Add New Photo</h3>
+            <input type="file" id="photoFile"/>
+            <br><br>
+            <button onclick="addPhoto()" class="add-photo-btn">Add Photo</button>
+            <button onclick="closeAddPhotoModal()" class="delete-button">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function openAddPhotoModal() {
+            document.getElementById('addPhotoModal').style.display = 'flex';
+        }
+
+        function closeAddPhotoModal() {
+            document.getElementById('addPhotoModal').style.display = 'none';
+        }
+
+        function addPhoto() {
+            const photoFile = document.getElementById('photoFile').files[0];
+            const albumId = window.location.pathname.split('/')[2];
+            if (photoFile) {
+                const formData = new FormData();
+                formData.append('file', photoFile);
+                formData.append('albumId', albumId);
+
+                fetch('/photos/add', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Photo added successfully');
+                        location.reload();
+                    } else {
+                        alert('Error adding photo');
+                    }
+                }).catch(error => {
+                    alert('Error adding photo');
+                    console.error(error);
+                });
+            } else {
+                alert('Please provide a photo and a name.');
+            }
+        }
+
+        function deletePhoto(photoId) {
+            if (confirm('Are you sure you want to delete this photo?')) {
+                fetch('/photos/delete/' + photoId, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Photo deleted successfully');
+                        location.reload();
+                    } else {
+                        alert('Error deleting photo');
+                    }
+                });
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

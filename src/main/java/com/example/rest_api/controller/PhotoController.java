@@ -1,6 +1,10 @@
 package com.example.rest_api.controller;
 
+import com.example.rest_api.database.resources.model.AlbumEntity;
 import com.example.rest_api.database.resources.model.PhotoEntity;
+import com.example.rest_api.database.users.model.UserEntity;
+import com.example.rest_api.database.users.repository.UserRepository;
+import com.example.rest_api.service.AlbumService;
 import com.example.rest_api.service.PhotoService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,47 +15,53 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class PhotoController {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AlbumService albumService;
+
+    @Autowired
     private PhotoService photoService;
 
-    @GetMapping("/album_photos_admin/{albumId}")
-    public String getPhotosByAlbum(@PathVariable("albumId") int albumId, Model model) {
-        System.out.println("I am here with albumId: " + albumId);  // Verifică dacă ajunge în funcție
+    @GetMapping("/photos/{albumId}")
+    public String getPhotosByAlbum(@PathVariable("albumId") int albumId, Model model, Principal principal) {
+        UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
+        Iterable<PhotoEntity> photos = photoService.findPhotosByAlbumId(albumId);
+        model.addAttribute("photos", photos);
 
-        model.addAttribute("photos", photoService.findPhotosByAlbumId(albumId));
-
-        return "/user/album_photos_admin";  // Numele corect al template-ului
-    }
-
-    @GetMapping("/album_photos_user/{albumId}")
-    public String getPhotosByAlbumUser(@PathVariable("albumId") int albumId, Model model) {
-        System.out.println("I am here with albumId: " + albumId);  // Verifică dacă ajunge în funcție
-
-        model.addAttribute("photos", photoService.findPhotosByAlbumId(albumId));
-
-        return "/user/album_photos_user";  // Numele corect al template-ului
-    }
-
-    // POST: Adaugă o poză în album
-    @PostMapping("/api/photos/add")
-    public String addPhoto(@RequestParam("file") MultipartFile file,
-                           @RequestParam("albumId") int albumId) {
-        try {
-            // Salvează poza
-            byte[] imageData = file.getBytes(); // Transformă fișierul într-un array de bytes
-            PhotoEntity photoEntity = photoService.addPhoto(imageData, albumId);
-            return "redirect:/album_photos_admin/" + albumId;
-            // Redirect către albumul cu pozele
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "error"; // Sau o altă pagină de eroare
+        if (albumService.canAdd(albumId, user)) {
+            model.addAttribute("canAdd", true);
+        } else {
+            model.addAttribute("canAdd", false);
         }
+
+        if (albumService.canDelete(albumId, user)) {
+            model.addAttribute("canDelete", true);
+        } else {
+            model.addAttribute("canDelete", false);
+        }
+
+        return "/user/photos";
     }
 
-    @GetMapping("/api/photos/{photoId}")
+    @PostMapping("/photos/add")
+    public String addPhoto(@RequestParam("file") MultipartFile file,
+                           @RequestParam("albumId") int albumId) throws IOException {
+        byte[] imageData = file.getBytes();
+        photoService.addPhoto(imageData, albumId);
+        return "redirect:/photos/" + albumId;
+    }
+
+    @GetMapping("/photos/{photoId}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable("photoId") int photoId) {
         PhotoEntity photo = photoService.getPhotoById(photoId);
         if (photo != null && photo.getImageData() != null) {
@@ -65,15 +75,10 @@ public class PhotoController {
 
 
     // DELETE: Șterge o poză din album
-    @DeleteMapping("/api/photos/delete/{id}")
+    @DeleteMapping("/photos/delete/{id}")
     @ResponseBody
     public String deletePhoto(@PathVariable("id") int id) {
-        try {
             photoService.deletePhoto(id);
-            return "success"; // Poți returna un mesaj de succes sau status code
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "error";
-        }
+            return "success";
     }
 }

@@ -1,9 +1,11 @@
 package com.example.rest_api.service;
 
+import com.example.rest_api.database.users.model.PermissionEntity;
 import com.example.rest_api.database.users.model.RoleEntity;
 import com.example.rest_api.database.resources.repository.AlbumRepository;
 import com.example.rest_api.database.resources.model.AlbumEntity;
 import com.example.rest_api.database.users.model.UserEntity;
+import com.example.rest_api.database.users.repository.PermissionRepository;
 import com.example.rest_api.database.users.repository.RoleRepository;
 import com.example.rest_api.database.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class AlbumService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PermissionRepository permissionRepository;
+
     private final AlbumRepository albumRepository;
 
     @Autowired
@@ -33,14 +38,11 @@ public class AlbumService {
         return this.albumRepository.findAll();
     }
 
-    // Create a new album
     public void createAlbum(String albumName, UserEntity user) {
-        // Creează și salvează albumul
         AlbumEntity album = new AlbumEntity();
         album.setName(albumName);
         albumRepository.save(album);
 
-        // Creează rolurile asociate albumului
         String adminRoleName = albumName.toUpperCase() + "_ALBUM_ADMIN";
         String userRoleName = albumName.toUpperCase() + "_ALBUM";
 
@@ -52,12 +54,38 @@ public class AlbumService {
         userRole.setName(userRoleName);
         roleRepository.save(userRole);
 
-        // Asociază utilizatorului rolul de admin pentru album
         user.getRoles().add(adminRole);
         userRepository.save(user);
 
-        // Asociază rolul direct în baza de date
-//        roleRepository.associateRoleToUser(user.getId(), adminRole.getId());
+        PermissionEntity permission = new PermissionEntity();
+        permission.setHttp_method("GET");
+        permission.setUrl("/album/*");
+        permission.setRole(adminRole);
+        permissionRepository.save(permission);
+
+        permission = new PermissionEntity();
+        permission.setHttp_method("POST");
+        permission.setUrl("/album/*");
+        permission.setRole(adminRole);
+        permissionRepository.save(permission);
+
+        permission = new PermissionEntity();
+        permission.setHttp_method("PATCH");
+        permission.setUrl("/album/*");
+        permission.setRole(adminRole);
+        permissionRepository.save(permission);
+
+        permission = new PermissionEntity();
+        permission.setHttp_method("DELETE");
+        permission.setUrl("/album/*");
+        permission.setRole(adminRole);
+        permissionRepository.save(permission);
+
+        permission = new PermissionEntity();
+        permission.setHttp_method("GET");
+        permission.setUrl("/album/*");
+        permission.setRole(userRole);
+        permissionRepository.save(permission);
     }
 
     public void deleteAlbum(int albumId) {
@@ -81,17 +109,55 @@ public class AlbumService {
         return albumRepository.findById(albumId);
     }
 
-    public Iterable<AlbumEntity> findAlbums(UserEntity user) {
+//    public Iterable<AlbumEntity> findAlbums(UserEntity user) {
+//        Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
+//        List<AlbumEntity> albums = new ArrayList<>();
+//        for (Long roleId : roleIds) {
+//            String roleName = roleRepository.findRoleName(roleId);
+//            if (roleName.endsWith("_ALBUM_ADMIN")) {
+//                String albumName = roleName.substring(0, roleName.length() - 12);
+//                albums.add(albumRepository.findByName(albumName).orElse(null));
+//            }
+//        }
+//        return albums;
+//        return albumRepository.findAlbums(user.getId());
+//    }
+
+    public Optional<AlbumEntity> findByName(String albumName) {
+        return albumRepository.findByName(albumName);
+    }
+
+    public boolean canDelete(Integer albumId, UserEntity user) {
+        AlbumEntity album = albumRepository.findById(albumId).orElse(null);
         Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
-        List<AlbumEntity> albums = new ArrayList<>();
         for (Long roleId : roleIds) {
-            String roleName = roleRepository.findRoleName(roleId);
-            if (roleName.endsWith("_ALBUM_ADMIN")) {
-                String albumName = roleName.substring(0, roleName.length() - 12);
-                albums.add(albumRepository.findByName(albumName).orElse(null));
+            RoleEntity role = roleRepository.findById(roleId).orElse(null);
+            if (role.getName().startsWith(album.getName())) {
+                Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
+                for (PermissionEntity permission : permissions) {
+                    if (permission.getHttp_method().equals("DELETE")) {
+                        return true;
+                    }
+                }
             }
         }
-        return albums;
-//        return albumRepository.findAlbums(user.getId());
+        return false;
+    }
+
+    public boolean canAdd(Integer albumId, UserEntity user) {
+        AlbumEntity album = albumRepository.findById(albumId).orElse(null);
+        Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
+        for (Long roleId : roleIds) {
+            RoleEntity role = roleRepository.findById(roleId).orElse(null);
+            if (role.getName().startsWith(album.getName())) {
+                Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
+                for (PermissionEntity permission : permissions) {
+                    if (permission.getHttp_method().equals("POST") || permission.getHttp_method().equals("PATCH")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
