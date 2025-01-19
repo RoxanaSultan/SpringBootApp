@@ -48,7 +48,7 @@
             width: 30%;
             text-align: center;
         }
-        .button {
+        .create-button {
             padding: 10px 20px;
             margin: 5px;
             cursor: pointer;
@@ -58,7 +58,7 @@
             border-radius: 0.375rem;
             transition: background-color 0.3s;
         }
-        .button:hover {
+        .create-button:hover {
             background-color: #434190;
         }
         .delete-btn {
@@ -79,7 +79,7 @@
 <body>
 <div layout:fragment="content">
     <!-- Create Album Button -->
-    <button onclick="openModal()" class="button">Create Album</button>
+    <button onclick="openModal()" class="create-button">Create Album</button>
     <br><br>
 
     <!-- Album List -->
@@ -101,8 +101,8 @@
             <h3>Create New Album</h3>
             <input type="text" id="albumName" placeholder="Enter album name">
             <br><br>
-            <button onclick="createAlbum()" class="button">OK</button>
-            <button onclick="closeModal()" class="button">Cancel</button>
+            <button onclick="createAlbum()" class="create-button">Create Album</button>
+            <button onclick="closeModal()" class="delete-btn">Cancel</button>
         </div>
     </div>
 
