@@ -61,7 +61,7 @@ public class PhotoController {
         return "redirect:/photos/" + albumId;
     }
 
-    @GetMapping("/photos/{photoId}/image")
+    @GetMapping("/photos/get/{photoId}")
     public ResponseEntity<byte[]> getImage(@PathVariable("photoId") int photoId) {
         PhotoEntity photo = photoService.getPhotoById(photoId);
         if (photo != null && photo.getImageData() != null) {

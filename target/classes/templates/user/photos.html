@@ -87,8 +87,9 @@
     <ul id="albumPhotosList">
         <li th:each="photo : ${photos}">
             <div class="card-body">
-                <img th:src="@{/photos/{id}(id=${photo.id})}" alt="Photo" class="card-img-top"/>
+                <img th:src="@{/photos/get/{id}(id=${photo.id})}" alt="Photo" class="card-img-top"/>
                 <button th:if="${canDelete}" class="delete-button" th:attr="onclick='deletePhoto(' + ${photo.id} + ')'">Delete</button>
+<!--                <button class="delete-button" onclick="deletePhoto(' + ${photo.id} + ')">Delete</button>-->
             </div>
         </li>
     </ul>

@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 .requestMatchers("/photos/add").authenticated()
                                 .requestMatchers("/photos/delete/**").authenticated()
                                 .requestMatchers("/photos/*").authenticated()
-                                .requestMatchers("/photos/*/image").authenticated()
+                                .requestMatchers("/photos/get/*").authenticated()
 //                                .requestMatchers("/api/photos/**").authenticated()
                         /* Dynamic trough AuthorizationManager */
                         .anyRequest().access(dynamicAuthorizationManager)
