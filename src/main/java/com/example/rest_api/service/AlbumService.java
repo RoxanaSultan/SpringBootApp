@@ -160,4 +160,32 @@ public class AlbumService {
         }
         return false;
     }
+
+    public List<AlbumEntity> findAlbums(UserEntity user) {
+        List<AlbumEntity> albums = new ArrayList<>();
+        Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
+        for (Long roleId : roleIds) {
+            RoleEntity role = roleRepository.findById(roleId).orElse(null);
+            Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
+            if (role.getName().endsWith("_ALBUM_ADMIN")) {
+                for (PermissionEntity permission : permissions)
+                {
+                    if (permission.getHttp_method().equals("GET")) {
+                        String albumName = role.getName().substring(0, role.getName().length() - 12);
+                        albums.add(albumRepository.findByName(albumName).orElse(null));
+                    }
+                }
+            }
+            if (role.getName().endsWith("_ALBUM")) {
+                for (PermissionEntity permission : permissions)
+                {
+                    if (permission.getHttp_method().equals("GET")) {
+                        String albumName = role.getName().substring(0, role.getName().length() - 6);
+                        albums.add(albumRepository.findByName(albumName).orElse(null));
+                    }
+                }
+            }
+        }
+        return albums;
+    }
 }

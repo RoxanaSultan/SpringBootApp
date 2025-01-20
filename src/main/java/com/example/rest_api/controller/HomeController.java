@@ -42,7 +42,11 @@ public class HomeController {
         }
 
         UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
-        List<AlbumEntity> albums = albumService.findAll();
+
+//        List<AlbumEntity> albums = albumService.findAll();
+
+        List<AlbumEntity> albums = albumService.findAlbums(user);
+
         model.addAttribute("albums", albums);
 
         // Create a list to hold canDelete values for each album
