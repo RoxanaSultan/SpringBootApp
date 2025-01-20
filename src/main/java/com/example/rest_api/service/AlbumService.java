@@ -43,8 +43,9 @@ public class AlbumService {
         album.setName(albumName);
         albumRepository.save(album);
 
-        String adminRoleName = albumName.toUpperCase() + "_ALBUM_ADMIN";
-        String userRoleName = albumName.toUpperCase() + "_ALBUM";
+        albumName = albumName.toUpperCase().trim();
+        String adminRoleName = albumName + "_ALBUM_ADMIN";
+        String userRoleName = albumName + "_ALBUM";
 
         RoleEntity adminRole = new RoleEntity();
         adminRole.setName(adminRoleName);
@@ -57,33 +58,26 @@ public class AlbumService {
         user.getRoles().add(adminRole);
         userRepository.save(user);
 
+        List<String> httpMethods = new ArrayList<>();
+        httpMethods.add("GET");
+        httpMethods.add("POST");
+        httpMethods.add("PATCH");
+        httpMethods.add("DELETE");
+
         PermissionEntity permission = new PermissionEntity();
-        permission.setHttp_method("GET");
-        permission.setUrl("/album/*");
-        permission.setRole(adminRole);
-        permissionRepository.save(permission);
 
-        permission = new PermissionEntity();
-        permission.setHttp_method("POST");
-        permission.setUrl("/album/*");
-        permission.setRole(adminRole);
-        permissionRepository.save(permission);
-
-        permission = new PermissionEntity();
-        permission.setHttp_method("PATCH");
-        permission.setUrl("/album/*");
-        permission.setRole(adminRole);
-        permissionRepository.save(permission);
-
-        permission = new PermissionEntity();
-        permission.setHttp_method("DELETE");
-        permission.setUrl("/album/*");
-        permission.setRole(adminRole);
-        permissionRepository.save(permission);
+        for (String method : httpMethods)
+        {
+            permission = new PermissionEntity();
+            permission.setHttp_method(method);
+            permission.setUrl("/photos/" + albumName);
+            permission.setRole(adminRole);
+            permissionRepository.save(permission);
+        }
 
         permission = new PermissionEntity();
         permission.setHttp_method("GET");
-        permission.setUrl("/album/*");
+        permission.setUrl("/photos/" + albumName);
         permission.setRole(userRole);
         permissionRepository.save(permission);
     }
@@ -108,20 +102,6 @@ public class AlbumService {
     public Optional<AlbumEntity> findAlbumById(Integer albumId) {
         return albumRepository.findById(albumId);
     }
-
-//    public Iterable<AlbumEntity> findAlbums(UserEntity user) {
-//        Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
-//        List<AlbumEntity> albums = new ArrayList<>();
-//        for (Long roleId : roleIds) {
-//            String roleName = roleRepository.findRoleName(roleId);
-//            if (roleName.endsWith("_ALBUM_ADMIN")) {
-//                String albumName = roleName.substring(0, roleName.length() - 12);
-//                albums.add(albumRepository.findByName(albumName).orElse(null));
-//            }
-//        }
-//        return albums;
-//        return albumRepository.findAlbums(user.getId());
-//    }
 
     public Optional<AlbumEntity> findByName(String albumName) {
         return albumRepository.findByName(albumName);
@@ -164,24 +144,22 @@ public class AlbumService {
     public List<AlbumEntity> findAlbums(UserEntity user) {
         List<AlbumEntity> albums = new ArrayList<>();
         Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
+
         for (Long roleId : roleIds) {
             RoleEntity role = roleRepository.findById(roleId).orElse(null);
+            if (role == null) continue;
+
             Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
-            if (role.getName().endsWith("_ALBUM_ADMIN")) {
-                for (PermissionEntity permission : permissions)
-                {
-                    if (permission.getHttp_method().equals("GET")) {
-                        String albumName = role.getName().substring(0, role.getName().length() - 12);
-                        albums.add(albumRepository.findByName(albumName).orElse(null));
-                    }
-                }
-            }
-            if (role.getName().endsWith("_ALBUM")) {
-                for (PermissionEntity permission : permissions)
-                {
-                    if (permission.getHttp_method().equals("GET")) {
-                        String albumName = role.getName().substring(0, role.getName().length() - 6);
-                        albums.add(albumRepository.findByName(albumName).orElse(null));
+
+            String suffix = role.getName().endsWith("_ALBUM_ADMIN") ? "_ALBUM_ADMIN" :
+                    role.getName().endsWith("_ALBUM") ? "_ALBUM" : null;
+
+            if (suffix != null) {
+                String albumName = role.getName().substring(0, role.getName().length() - suffix.length());
+                for (PermissionEntity permission : permissions) {
+                    if ("GET".equals(permission.getHttp_method())) {
+                        albumRepository.findByName(albumName).ifPresent(albums::add);
+                        break;
                     }
                 }
             }

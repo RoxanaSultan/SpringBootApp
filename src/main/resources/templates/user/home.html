@@ -110,7 +110,7 @@
     <!-- Album List -->
     <ul id="albumList">
         <li th:each="album, iterStat : ${albums}">
-            <div class="card" th:onclick="'window.location.href=\'/photos/' + ${album.id} + '\''">
+            <div class="card" th:onclick="'window.location.href=\'/photos/' + ${album.name} + '\''">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${album.name}">Album Name</h5>
                     <!-- Delete Button -->
