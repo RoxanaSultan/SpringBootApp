@@ -54,7 +54,7 @@ public class PhotoController {
         return "/user/photos";
     }
 
-    @PostMapping("/photos/{albumName}/add")
+    @PostMapping("/photos/{albumName}")
     public ResponseEntity<String> addPhoto(@RequestParam("file") MultipartFile file,
                                            @RequestParam("albumName") String albumName) throws IOException {
         byte[] imageData = file.getBytes();
@@ -77,8 +77,7 @@ public class PhotoController {
 
 
     // DELETE: Șterge o poză din album
-    @DeleteMapping("/photos/{albumName}/delete/{id}")
-    @ResponseBody
+    @DeleteMapping("/photos/{albumName}/{id}")
     public ResponseEntity<String> deletePhoto(@PathVariable("id") int id) {
         photoService.deletePhoto(id);
         return ResponseEntity.ok("Photo deleted successfully");
