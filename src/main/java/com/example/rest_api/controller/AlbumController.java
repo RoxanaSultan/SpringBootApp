@@ -45,42 +45,42 @@ public class AlbumController {
         return "/albums";
     }
 
-    @PostMapping("/home/create")
-    @ResponseBody
-    public String createAlbum(@RequestBody Map<String, String> request, Principal principal) {
-        String albumName = request.get("name");
-        albumName = albumName.toUpperCase().trim();
-        if (albumService.findByName(albumName).isPresent()) {
-            return "Album name already exists!";
-        }
-
-        if (albumName == null || albumName.isEmpty()) {
-            return "Album name cannot be empty!";
-        }
-
-        UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
-
-        if (user == null) {
-            return "User not found!";
-        }
-
-        albumService.createAlbum(albumName, user);
-
-        return "Album created successfully!";
-    }
-
-    @DeleteMapping("/home/delete")
-    @ResponseBody
-    public String deleteAlbum(@RequestBody Map<String, String> request, Principal principal) {
-        String albumIdString = request.get("albumId");
-
-        if (albumIdString == null) {
-            return "Album ID is missing in request.";
-        }
-
-        int albumId = Integer.parseInt(albumIdString);
-
-        albumService.deleteAlbum(albumId);
-        return "Album deleted successfully.";
-    }
+//    @PostMapping("/home/create")
+//    @ResponseBody
+//    public String createAlbum(@RequestBody Map<String, String> request, Principal principal) {
+//        String albumName = request.get("name");
+//        albumName = albumName.toUpperCase().trim();
+//        if (albumService.findByName(albumName).isPresent()) {
+//            return "Album name already exists!";
+//        }
+//
+//        if (albumName == null || albumName.isEmpty()) {
+//            return "Album name cannot be empty!";
+//        }
+//
+//        UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
+//
+//        if (user == null) {
+//            return "User not found!";
+//        }
+//
+//        albumService.createAlbum(albumName, user);
+//
+//        return "Album created successfully!";
+//    }
+//
+//    @DeleteMapping("/home/delete")
+//    @ResponseBody
+//    public String deleteAlbum(@RequestBody Map<String, String> request, Principal principal) {
+//        String albumIdString = request.get("albumId");
+//
+//        if (albumIdString == null) {
+//            return "Album ID is missing in request.";
+//        }
+//
+//        int albumId = Integer.parseInt(albumIdString);
+//
+//        albumService.deleteAlbum(albumId);
+//        return "Album deleted successfully.";
+//    }
 }

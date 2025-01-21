@@ -32,7 +32,6 @@ public class SecurityConfig {
         DefaultSecurityFilterChain build = http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/login/**", "/register", "/oauth2/**").permitAll()
-                                .requestMatchers("/photos/get/*").authenticated()
                         /* Dynamic trough AuthorizationManager */
                         .anyRequest().access(dynamicAuthorizationManager)
                         /* Hardcoded Examples */

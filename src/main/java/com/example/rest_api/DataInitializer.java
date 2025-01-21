@@ -56,7 +56,7 @@ public class DataInitializer implements ApplicationRunner {
             roleService.save(user);
             PermissionEntity permissionEntity = new PermissionEntity();
             permissionEntity.setHttp_method("GET");
-            permissionEntity.setUrl("/user/home");
+            permissionEntity.setUrl("/home");
             permissionEntity.setRole(user);
             permissionService.save(permissionEntity);
         }

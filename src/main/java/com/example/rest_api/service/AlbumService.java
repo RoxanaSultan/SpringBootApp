@@ -70,8 +70,13 @@ public class AlbumService {
         {
             permission = new PermissionEntity();
             permission.setHttp_method(method);
-            permission.setUrl("/photos/" + albumName);
             permission.setRole(adminRole);
+            if (method.equals("DELETE")) {
+                permission.setUrl("/photos/" + albumName + "/**");
+            }
+            else {
+                permission.setUrl("/photos/" + albumName);
+            }
             permissionRepository.save(permission);
         }
 
@@ -91,6 +96,9 @@ public class AlbumService {
 
         Integer adminRoleId = roleRepository.findRoleByName(adminRoleName);
         Integer userRoleId = roleRepository.findRoleByName(userRoleName);
+
+        permissionRepository.deletePermissionsForRole(Long.valueOf(adminRoleId));
+        permissionRepository.deletePermissionsForRole(Long.valueOf(userRoleId));
 
         roleRepository.deleteAssociatedRole(adminRoleId);
         roleRepository.deleteAssociatedRole(userRoleId);
