@@ -166,4 +166,8 @@ public class AlbumService {
         }
         return albums;
     }
+
+    public AlbumEntity findAlbumByName(String albumName) {
+        return albumRepository.findAlbumByName(albumName);
+    }
 }

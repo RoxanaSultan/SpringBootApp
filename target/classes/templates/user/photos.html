@@ -116,13 +116,13 @@
 
         function addPhoto() {
             const photoFile = document.getElementById('photoFile').files[0];
-            const albumId = window.location.pathname.split('/')[2];
+            const albumName = window.location.pathname.split('/')[2];
             if (photoFile) {
                 const formData = new FormData();
                 formData.append('file', photoFile);
-                formData.append('albumId', albumId);
+                formData.append('albumName', albumName);
 
-                fetch('/photos/add', {
+                fetch('/photos/' + albumName + '/add', {
                     method: 'POST',
                     body: formData
                 }).then(response => {
@@ -142,8 +142,11 @@
         }
 
         function deletePhoto(photoId) {
+            const albumName = window.location.pathname.split('/')[2];
+            const formData = new FormData();
+            formData.append('albumName', albumName);
             if (confirm('Are you sure you want to delete this photo?')) {
-                fetch('/photos/delete/' + photoId, {
+                fetch('/photos/' + albumName+ '/delete/' + photoId, {
                     method: 'DELETE'
                 }).then(response => {
                     if (response.ok) {

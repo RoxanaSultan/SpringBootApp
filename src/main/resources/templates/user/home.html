@@ -110,8 +110,8 @@
     <!-- Album List -->
     <ul id="albumList">
         <li th:each="album, iterStat : ${albums}">
-            <div class="card" th:onclick="'window.location.href=\'/photos/' + ${album.name} + '\''">
-                <div class="card-body">
+            <div class="card" th:attr="data-url='/photos', data-album-name=${album.name}" onclick="redirectToAlbum(this)">
+            <div class="card-body">
                     <h5 class="card-title" th:text="${album.name}">Album Name</h5>
                     <!-- Delete Button -->
                     <button th:if="${canDeleteList[iterStat.index]}" th:attr="onclick='deleteAlbum(event, ' + ${album.id} + ')'" class="delete-btn">Delete</button>
@@ -127,13 +127,19 @@
             <h3>Create New Album</h3>
             <br><br>
             <input type="text" id="albumName" placeholder="Enter album name">
-            <br><br>
+            <br>
             <button onclick="createAlbum()" class="create-button">Create Album</button>
             <button onclick="closeModal()" class="delete-btn">Cancel</button>
         </div>
     </div>
 
     <script>
+        function redirectToAlbum(element) {
+            const url = element.getAttribute('data-url');
+            const albumName = element.getAttribute('data-album-name');
+            window.location.href = `${url}/${albumName}`;
+        }
+
         function openModal() {
             document.getElementById('albumModal').style.display = 'block';
         }

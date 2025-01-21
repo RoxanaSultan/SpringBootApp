@@ -32,19 +32,20 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
-    @GetMapping("/photos/{albumId}")
-    public String getPhotosByAlbum(@PathVariable("albumId") int albumId, Model model, Principal principal) {
+    @GetMapping("/photos/{albumName}")
+    public String getPhotosByAlbum(@PathVariable("albumName") String albumName, Model model, Principal principal) {
         UserEntity user = userRepository.findByEmail(principal.getName()).orElse(null);
-        Iterable<PhotoEntity> photos = photoService.findPhotosByAlbumId(albumId);
+        AlbumEntity album = albumService.findAlbumByName(albumName);
+        Iterable<PhotoEntity> photos = photoService.findPhotosByAlbumId(album.getId());
         model.addAttribute("photos", photos);
 
-        if (albumService.canAdd(albumId, user)) {
+        if (albumService.canAdd(album.getId(), user)) {
             model.addAttribute("canAdd", true);
         } else {
             model.addAttribute("canAdd", false);
         }
 
-        if (albumService.canDelete(albumId, user)) {
+        if (albumService.canDelete(album.getId(), user)) {
             model.addAttribute("canDelete", true);
         } else {
             model.addAttribute("canDelete", false);
@@ -53,12 +54,13 @@ public class PhotoController {
         return "/user/photos";
     }
 
-    @PostMapping("/photos/add")
-    public String addPhoto(@RequestParam("file") MultipartFile file,
-                           @RequestParam("albumId") int albumId) throws IOException {
+    @PostMapping("/photos/{albumName}/add")
+    public ResponseEntity<String> addPhoto(@RequestParam("file") MultipartFile file,
+                                           @RequestParam("albumName") String albumName) throws IOException {
         byte[] imageData = file.getBytes();
-        photoService.addPhoto(imageData, albumId);
-        return "redirect:/photos/" + albumId;
+        AlbumEntity album = albumService.findAlbumByName(albumName);
+        photoService.addPhoto(imageData, album.getId());
+        return ResponseEntity.ok("Photo added successfully");
     }
 
     @GetMapping("/photos/get/{photoId}")
@@ -75,10 +77,10 @@ public class PhotoController {
 
 
     // DELETE: Șterge o poză din album
-    @DeleteMapping("/photos/delete/{id}")
+    @DeleteMapping("/photos/{albumName}/delete/{id}")
     @ResponseBody
-    public String deletePhoto(@PathVariable("id") int id) {
-            photoService.deletePhoto(id);
-            return "success";
+    public ResponseEntity<String> deletePhoto(@PathVariable("id") int id) {
+        photoService.deletePhoto(id);
+        return ResponseEntity.ok("Photo deleted successfully");
     }
 }
