@@ -1,5 +1,6 @@
 package com.example.rest_api.database.users.repository;
 
+import com.example.rest_api.database.users.model.RoleEntity;
 import com.example.rest_api.database.users.model.UserEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -32,4 +32,12 @@ public class RoleService {
     public List<RoleEntity> findAll() {
         return roleRepository.findAll();
     }
+
+    public List<RoleEntity> getAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    public List<RoleEntity> getUserRoles(Long id) {
+        return roleRepository.getUserRoles(id);
+    }
 }

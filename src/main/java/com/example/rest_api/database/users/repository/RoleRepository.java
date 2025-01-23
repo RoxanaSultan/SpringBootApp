@@ -36,4 +36,10 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
     @Query(value = "SELECT name FROM role r WHERE r.id = :roleId", nativeQuery = true)
     String findRoleName(Long roleId);
+
+    @Query(value = "SELECT * FROM role r WHERE r.id IN (SELECT role_id FROM app_users_roles WHERE app_user_id = :userId)", nativeQuery = true)
+    List<RoleEntity> findRolesByUserId(int userId);
+
+    @Query(value = "SELECT r.* FROM role r INNER JOIN app_users_roles ar ON r.id = ar.role_id WHERE ar.app_user_id = :id", nativeQuery = true)
+    List<RoleEntity> getUserRoles(Long id);
 }

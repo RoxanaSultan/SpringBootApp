@@ -1,5 +1,6 @@
 package com.example.rest_api.service;
 
+import com.example.rest_api.database.users.model.RoleEntity;
 import com.example.rest_api.database.users.model.UserEntity;
 import com.example.rest_api.database.users.repository.RoleRepository;
 import com.example.rest_api.database.users.repository.UserRepository;
@@ -96,5 +97,13 @@ public class UserService extends OidcUserService implements UserDetailsService {
 
     public UserEntity findUserByEmail(String userEmail) {
         return this.userRepository.findByEmail(userEmail).orElse(null);
+    }
+
+    public List<RoleEntity> findRolesByUserId(int userId) {
+        return roleRepository.findRolesByUserId(userId);
+    }
+
+    public UserEntity findById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
     }
 }

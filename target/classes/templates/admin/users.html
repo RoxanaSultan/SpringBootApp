@@ -2,6 +2,58 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout.html}">
 <head>
     <title>User Management</title>
+    <style>
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: max-content;
+            margin: 100px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: auto;
+            max-height: 80vh;
+            overflow-y: auto;
+            align-content: center;
+        }
+        #rolesModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .save-button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #4c51bf;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+        }
+        .save-button:hover {
+            background-color: #434190;
+        }
+        .cancel-button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+        }
+        .cancel-button:hover {
+            background-color: #c53030;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content">
@@ -24,17 +76,74 @@
                     </ul>
                 </td>
                 <td class="px-4 py-2 text-center space-x-2">
-                    <form th:action="@{/admin/users/{id}/roles(id=${user.id})}" method="post" class="inline-block">
-                        <button type="submit"
-                                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none">
-                            Update Roles
-                        </button>
-                    </form>
+<!--                    <form th:action="@{/update_roles/{id}(id=${user.id})}" method="get" class="inline-block">-->
+                    <button type="button"
+                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 focus:outline-none"
+                            th:attr="onclick='openModal(' + ${user.id} + ')'">
+                        Update Roles
+                    </button>
+                    <!--                    </form>-->
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
+
+    <div id="rolesModal">
+        <div class="modal-content">
+            <h2>Select Roles</h2>
+            <form id="rolesForm">
+                <br>
+                <div id="rolesChecklist">
+                    <!-- Aici vor fi generate dinamically checkbox-urile -->
+                </div>
+                <br>
+                <button type="button" onclick="saveChanges()" class="save-button">Save</button>
+                <button type="button" onclick="closeModal()" class="cancel-button">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        function getRoles(userId) {
+            fetch("/getRoles/" + userId)
+                .then(response => response.json())
+                .then(data => {
+                    const rolesChecklist = document.getElementById('rolesChecklist');
+                    rolesChecklist.innerHTML = '';
+                    const allRoles = data.allRoles;
+                    const userRoles = data.userRoles.map(role => role.name);
+
+                    allRoles.forEach(role => {
+                        const isChecked = userRoles.includes(role.name) ? 'checked' : '';
+                        rolesChecklist.innerHTML += `
+                    <label>
+                        <input type="checkbox" name="roles" value="${role.id}" ${isChecked}>
+                        ${role.name}
+                    </label><br>
+                `;
+                    });
+
+                    document.getElementById('rolesModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching roles:', error));
+        }
+
+        function openModal(userId) {
+            getRoles(userId);  // Asigură-te că se trimite userId corect
+            document.getElementById('rolesModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('rolesModal').style.display = 'none';
+        }
+
+
+        function saveChanges() {
+            document.getElementById('rolesModal').style.display = 'none';
+        }
+    </script>
 </div>
 </body>
 </html>
