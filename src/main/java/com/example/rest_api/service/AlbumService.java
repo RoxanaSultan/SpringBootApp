@@ -90,21 +90,22 @@ public class AlbumService {
     public void deleteAlbum(int albumId) {
         String albumName = albumRepository.findNameById(albumId);
         albumRepository.deleteById(albumId);
+        permissionRepository.deletePermissionsForAlbum(albumName);
 
-        String adminRoleName = albumName.toUpperCase() + "_ALBUM_ADMIN";
-        String userRoleName = albumName.toUpperCase() + "_ALBUM";
+//        String adminRoleName = albumName.toUpperCase() + "_ALBUM_ADMIN";
+//        String userRoleName = albumName.toUpperCase() + "_ALBUM";
 
-        Integer adminRoleId = roleRepository.findRoleByName(adminRoleName);
-        Integer userRoleId = roleRepository.findRoleByName(userRoleName);
+//        Integer adminRoleId = roleRepository.findRoleByName(adminRoleName);
+//        Integer userRoleId = roleRepository.findRoleByName(userRoleName);
 
-        permissionRepository.deletePermissionsForRole(Long.valueOf(adminRoleId));
-        permissionRepository.deletePermissionsForRole(Long.valueOf(userRoleId));
+//        permissionRepository.deletePermissionsForRole(Long.valueOf(adminRoleId));
+//        permissionRepository.deletePermissionsForRole(Long.valueOf(userRoleId));
 
-        roleRepository.deleteAssociatedRole(adminRoleId);
-        roleRepository.deleteAssociatedRole(userRoleId);
+//        roleRepository.deleteAssociatedRole(adminRoleId);
+//        roleRepository.deleteAssociatedRole(userRoleId);
 
-        roleRepository.deleteRole(adminRoleName);
-        roleRepository.deleteRole(userRoleName);
+//        roleRepository.deleteRole(adminRoleName);
+//        roleRepository.deleteRole(userRoleName);
     }
 
     public Optional<AlbumEntity> findAlbumById(Integer albumId) {
