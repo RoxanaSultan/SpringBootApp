@@ -2,6 +2,7 @@ package com.example.rest_api.service;
 
 import com.example.rest_api.database.users.model.RoleEntity;
 import com.example.rest_api.database.users.repository.RoleRepository;
+import com.example.rest_api.database.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +51,6 @@ public class RoleService {
         for (String roleId : roles) {
             roleRepository.associateRoleToUser(Long.valueOf(userId), Long.valueOf(roleId));
         }
+        roleRepository.associateRoleToUser(Long.valueOf(userId), 2L);
     }
 }

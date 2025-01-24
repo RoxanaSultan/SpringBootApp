@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PermissionRepository extends JpaRepository<PermissionEntity, Long> {
     @Query(value = "SELECT * FROM permissions p WHERE p.role_id = :roleId", nativeQuery = true)
@@ -16,4 +18,7 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, Lo
     @Transactional
     @Query(value = "DELETE FROM permissions WHERE role_id = :roleId", nativeQuery = true)
     void deletePermissionsForRole(Long roleId);
+
+    @Query(value = "SELECT * FROM permissions p WHERE p.role_id = :roleId", nativeQuery = true)
+    List<PermissionEntity> getRolePermissions(Long roleId);
 }

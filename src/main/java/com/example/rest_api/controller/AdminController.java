@@ -42,6 +42,7 @@ public class AdminController {
     @GetMapping("/roles")
     public String roleManagement(Model model) {
         model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("excludedRoles", List.of("ADMIN", "USER", "DEFAULT"));
         return "admin/roles";
     }
 }
