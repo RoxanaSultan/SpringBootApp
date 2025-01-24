@@ -106,8 +106,9 @@
 
 
     <script>
-        function getRoles(userId) {
-            fetch("/get_roles/" + userId)
+        let currentUserId = 0;
+        function getRoles() {
+            fetch("/get_roles/" + currentUserId)
                 .then(response => response.json())
                 .then(data => {
                     const rolesChecklist = document.getElementById('rolesChecklist');
@@ -131,7 +132,8 @@
         }
 
         function openModal(userId) {
-            getRoles(userId);  // Asigură-te că se trimite userId corect
+            currentUserId = userId;
+            getRoles();
             document.getElementById('rolesModal').style.display = 'block';
         }
 
@@ -141,19 +143,15 @@
 
 
         function saveChanges() {
-            const rolesModal = document.getElementById('rolesModal');
-            const userId = rolesModal.getAttribute('data-user-id'); // Preia userId din atributul modal
-
             const rolesForm = document.getElementById('rolesForm');
             const checkboxes = rolesForm.querySelectorAll('input[name="roles"]:checked');
             const selectedRoles = Array.from(checkboxes).map(checkbox => checkbox.value); // Role IDs selectate
 
             const payload = {
-                userId: userId,
+                userId: currentUserId,
                 roles: selectedRoles
             };
 
-            // Trimitere cerere POST către backend
             fetch("/update_roles", {
                 method: "POST",
                 headers: {

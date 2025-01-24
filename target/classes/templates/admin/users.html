@@ -106,8 +106,9 @@
 
 
     <script>
-        function getRoles(userId) {
-            fetch("/getRoles/" + userId)
+        let currentUserId = 0;
+        function getRoles() {
+            fetch("/get_roles/" + currentUserId)
                 .then(response => response.json())
                 .then(data => {
                     const rolesChecklist = document.getElementById('rolesChecklist');
@@ -131,7 +132,8 @@
         }
 
         function openModal(userId) {
-            getRoles(userId);  // Asigură-te că se trimite userId corect
+            currentUserId = userId;
+            getRoles();
             document.getElementById('rolesModal').style.display = 'block';
         }
 
@@ -141,7 +143,34 @@
 
 
         function saveChanges() {
-            document.getElementById('rolesModal').style.display = 'none';
+            // const rolesModal = document.getElementById('rolesModal');
+
+            const rolesForm = document.getElementById('rolesForm');
+            const checkboxes = rolesForm.querySelectorAll('input[name="roles"]:checked');
+            const selectedRoles = Array.from(checkboxes).map(checkbox => checkbox.value); // Role IDs selectate
+
+            const payload = {
+                userId: currentUserId,
+                roles: selectedRoles
+            };
+
+            // Trimitere cerere POST către backend
+            fetch("/update_roles", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Roles updated successfully!");
+                    } else {
+                        alert("Failed to update roles.");
+                    }
+                    closeModal();
+                })
+                .catch(error => console.error("Error updating roles:", error));
         }
     </script>
 </div>

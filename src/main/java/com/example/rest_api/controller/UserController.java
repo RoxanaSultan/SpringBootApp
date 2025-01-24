@@ -22,12 +22,15 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/update_roles")
-    public String updateRolesPage(@PathVariable Long id, Model model) {
-//        model.addAttribute("id", id);
-//        return "admin/update_roles";
-        return "success";
+    @PostMapping("/update_roles")
+    public ResponseEntity<String> updateRoles(@RequestBody Map<String, Object> payload) {
+        Long userId = Long.valueOf(payload.get("userId").toString());
+        List<String> roles = (List<String>) payload.get("roles");
+
+        roleService.updateUserRoles(Math.toIntExact(userId), roles);
+        return ResponseEntity.ok("Roles updated successfully!");
     }
+
 
     @GetMapping("/get_roles/{id}")
     public ResponseEntity<Map<String, Object>> getUserRoles(@PathVariable Long id) {

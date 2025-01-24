@@ -42,4 +42,9 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
     @Query(value = "SELECT r.* FROM role r INNER JOIN app_users_roles ar ON r.id = ar.role_id WHERE ar.app_user_id = :id", nativeQuery = true)
     List<RoleEntity> getUserRoles(Long id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM app_users_roles WHERE app_user_id = :userId AND role_id NOT IN (1, 2)", nativeQuery = true)
+    void deleteRolesByUserId(Integer userId);
 }
