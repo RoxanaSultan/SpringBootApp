@@ -81,14 +81,14 @@
 <body>
 <div layout:fragment="content">
     <!-- Add Photo Button -->
-    <button th:if="${canAdd}" class="add-photo-btn" th:attr="onclick='openAddPhotoModal()'">Add Photo</button>
+    <button th:if="${canPostPatch}" class="add-photo-btn" th:attr="onclick='openAddPhotoModal()'">Add Photo</button>
 
     <!-- Album Photos List -->
     <ul id="albumPhotosList">
         <li th:each="photo : ${photos}">
             <div class="card-body">
                 <img th:src="@{/photos/get/{id}(id=${photo.id})}" alt="Photo" class="card-img-top"/>
-                <button th:if="${canDelete}" class="delete-button" th:attr="onclick='deletePhoto(' + ${photo.id} + ')'">Delete</button>
+                <button th:if="${canPostPatch}" class="delete-button" th:attr="onclick='deletePhoto(' + ${photo.id} + ')'">Delete</button>
 <!--                <button class="delete-button" onclick="deletePhoto(' + ${photo.id} + ')">Delete</button>-->
             </div>
         </li>

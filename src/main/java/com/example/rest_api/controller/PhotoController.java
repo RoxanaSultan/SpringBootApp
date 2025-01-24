@@ -39,10 +39,10 @@ public class PhotoController {
         Iterable<PhotoEntity> photos = photoService.findPhotosByAlbumId(album.getId());
         model.addAttribute("photos", photos);
 
-        if (albumService.canAdd(album.getId(), user)) {
-            model.addAttribute("canAdd", true);
+        if (albumService.canPostPatch(album.getId(), user)) {
+            model.addAttribute("canPostPatch", true);
         } else {
-            model.addAttribute("canAdd", false);
+            model.addAttribute("canPostPatch", false);
         }
 
         if (albumService.canDelete(album.getId(), user)) {

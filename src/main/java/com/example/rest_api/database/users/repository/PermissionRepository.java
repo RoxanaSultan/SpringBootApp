@@ -43,6 +43,9 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, Lo
     @Query(value = "DELETE FROM permissions WHERE url LIKE %:albumName%", nativeQuery = true)
     void deletePermissionsForAlbum(String albumName);
 
+    @Query(value = "SELECT * FROM permissions p WHERE p.role_id = :roleId", nativeQuery = true)
+    PermissionEntity findPermissionByRole(Long roleId);
+
 //    @Query(value = "SELECT * FROM permissions p WHERE p.url = :albumName", nativeQuery = true)
 //    List<PermissionEntity> findPermissionsByAlbum(String albumName);
 

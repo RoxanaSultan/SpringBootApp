@@ -66,15 +66,13 @@ public class AlbumService {
 
         PermissionEntity permission = new PermissionEntity();
 
-        for (String method : httpMethods)
-        {
+        for (String method : httpMethods) {
             permission = new PermissionEntity();
             permission.setHttp_method(method);
             permission.setRole(adminRole);
             if (method.equals("DELETE")) {
                 permission.setUrl("/photos/" + albumName + "/**");
-            }
-            else {
+            } else {
                 permission.setUrl("/photos/" + albumName);
             }
             permissionRepository.save(permission);
@@ -116,15 +114,35 @@ public class AlbumService {
         return albumRepository.findByName(albumName);
     }
 
+//    public boolean canDelete(Integer albumId, UserEntity user) {
+//        AlbumEntity album = albumRepository.findById(albumId).orElse(null);
+//        Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
+//        for (Long roleId : roleIds) {
+//            RoleEntity role = roleRepository.findById(roleId).orElse(null);
+//            if (role.getName().startsWith(album.getName())) {
+//                Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
+//                for (PermissionEntity permission : permissions) {
+//                    if (permission.getHttp_method().equals("DELETE")) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
     public boolean canDelete(Integer albumId, UserEntity user) {
         AlbumEntity album = albumRepository.findById(albumId).orElse(null);
         Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
         for (Long roleId : roleIds) {
-            RoleEntity role = roleRepository.findById(roleId).orElse(null);
-            if (role.getName().startsWith(album.getName())) {
-                Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
-                for (PermissionEntity permission : permissions) {
-                    if (permission.getHttp_method().equals("DELETE")) {
+            Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
+            for (PermissionEntity permission : permissions) {
+                if (permission.getHttp_method().equals("DELETE"))
+                {
+                    if (permission.getUrl().equals("/photos/" + album.getName())
+                        || permission.getUrl().equals("/photos/" + album.getName() + "/**")
+                            || permission.getUrl().equals("/**"))
+                    {
                         return true;
                     }
                 }
@@ -133,15 +151,35 @@ public class AlbumService {
         return false;
     }
 
-    public boolean canAdd(Integer albumId, UserEntity user) {
+//    public boolean canAdd(Integer albumId, UserEntity user) {
+//        AlbumEntity album = albumRepository.findById(albumId).orElse(null);
+//        Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
+//        for (Long roleId : roleIds) {
+//            RoleEntity role = roleRepository.findById(roleId).orElse(null);
+//            if (role.getName().startsWith(album.getName())) {
+//                Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
+//                for (PermissionEntity permission : permissions) {
+//                    if (permission.getHttp_method().equals("POST") || permission.getHttp_method().equals("PATCH")) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
+    public boolean canPostPatch(Integer albumId, UserEntity user) {
         AlbumEntity album = albumRepository.findById(albumId).orElse(null);
         Iterable<Long> roleIds = userRepository.findAdminRoles(user.getId());
         for (Long roleId : roleIds) {
-            RoleEntity role = roleRepository.findById(roleId).orElse(null);
-            if (role.getName().startsWith(album.getName())) {
-                Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
-                for (PermissionEntity permission : permissions) {
-                    if (permission.getHttp_method().equals("POST") || permission.getHttp_method().equals("PATCH")) {
+            Iterable<PermissionEntity> permissions = permissionRepository.findPermissionsByRole(roleId);
+            for (PermissionEntity permission : permissions) {
+                if (permission.getHttp_method().equals("POST") || permission.getHttp_method().equals("PATCH"))
+                {
+                    if (permission.getUrl().equals("/photos/" + album.getName())
+                        || permission.getUrl().equals("/photos/" + album.getName() + "/**")
+                        || permission.getUrl().equals("/**"))
+                    {
                         return true;
                     }
                 }

@@ -132,6 +132,23 @@
     </div>
 
     <script>
+        function searchAlbums() {
+            const searchBar = document.getElementById('searchBar');
+            const filter = searchBar.value.toLowerCase();
+            const albumList = document.getElementById('albumList');
+            const albums = albumList.getElementsByClassName('card');
+
+            // Iterate through all albums
+            for (let i = 0; i < albums.length; i++) {
+                const albumName = albums[i].getAttribute('data-album-name').toLowerCase();
+                if (albumName.includes(filter)) {
+                    albums[i].style.display = ''; // Show album if it matches
+                } else {
+                    albums[i].style.display = 'none'; // Hide album if it doesn't match
+                }
+            }
+        }
+
         function redirectToAlbum(element) {
             const url = element.getAttribute('data-url');
             const albumName = element.getAttribute('data-album-name');
