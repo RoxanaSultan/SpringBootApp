@@ -1,8 +1,8 @@
 package com.example.rest_api.service;
 
 import com.example.rest_api.database.users.model.RoleEntity;
+import com.example.rest_api.database.users.repository.PermissionRepository;
 import com.example.rest_api.database.users.repository.RoleRepository;
-import com.example.rest_api.database.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Service
 public class RoleService {
+    @Autowired
+    private PermissionRepository permissionRepository;
     private RoleRepository roleRepository;
 
     @Autowired
@@ -52,5 +54,15 @@ public class RoleService {
             roleRepository.associateRoleToUser(Long.valueOf(userId), Long.valueOf(roleId));
         }
         roleRepository.associateRoleToUser(Long.valueOf(userId), 2L);
+    }
+
+    public RoleEntity findById(Long roleId) {
+        return roleRepository.findRoleById(roleId);
+    }
+
+    public void deleteRoleById(Long id) {
+        permissionRepository.deletePermissionsForRole(id);
+        roleRepository.deleteAssociatedRole(Math.toIntExact(id));
+        roleRepository.deleteById(id);
     }
 }

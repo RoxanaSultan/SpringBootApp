@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,15 +31,6 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @PostMapping("/update_permissions")
-    public ResponseEntity<String> updatePermissions(@RequestBody Map<String, Object> payload) {
-        Long userId = Long.valueOf(payload.get("userId").toString());
-        List<String> roles = (List<String>) payload.get("roles");
-
-        roleService.updateUserRoles(Math.toIntExact(userId), roles);
-        return ResponseEntity.ok("Roles updated successfully!");
-    }
-
     @GetMapping("/get_permissions/{role_id}")
     public ResponseEntity<Map<String, Object>> getPermissions(@PathVariable Long role_id) {
         List<PermissionEntity> rolePermissions = permissionService.getRolePermissions(role_id);
@@ -54,6 +46,35 @@ public class RoleController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/add_permission")
+    public ResponseEntity<String> addPermission(@RequestBody Map<String, Object> newPermission) {
+        String http_method = (String) newPermission.get("http_method");
+        String url = (String) newPermission.get("url");
+        Long roleId = Long.valueOf(newPermission.get("role_id").toString());
+
+        PermissionEntity permission = new PermissionEntity();
+        permission.setHttp_method(http_method);
+        permission.setUrl(url);
+        permission.setRole(roleService.findById(roleId));
+        permissionService.save(permission);
+
+        return ResponseEntity.ok("Permission added successfully!");
+    }
+
+    @PostMapping("/delete_permission")
+    public ResponseEntity<String> deletePermission(@RequestBody Map<String, Object> payload) {
+        Long permissionId = Long.valueOf(payload.get("permissionId").toString());
+
+        permissionService.deletePermission(permissionId);
+
+        return ResponseEntity.ok("Permission deleted successfully!");
+    }
+
+    @PostMapping("/admin/roles/{id}/delete")
+    public ModelAndView deleteRole(@PathVariable Long id) {
+        roleService.deleteRoleById(id);
+        return new ModelAndView("redirect:/admin/roles");
+    }
 }
 
 

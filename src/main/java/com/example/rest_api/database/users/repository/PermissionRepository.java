@@ -21,4 +21,25 @@ public interface PermissionRepository extends JpaRepository<PermissionEntity, Lo
 
     @Query(value = "SELECT * FROM permissions p WHERE p.role_id = :roleId", nativeQuery = true)
     List<PermissionEntity> getRolePermissions(Long roleId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM permissions WHERE role_id = :roleId", nativeQuery = true)
+    void deletePermissionsByRole(int roleId);
+
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO permissions (role_id, permission_id) VALUES (:roleId, :permissionId)", nativeQuery = true)
+    void associatePermissionToRole(Long roleId, Long permissionId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM permissions WHERE id = :permissionId", nativeQuery = true)
+    void deletePermissionById(Long permissionId);
+
+//    @Modifying
+//    @Transactional
+//    @Query(value = "INSERT INTO permissions (http_method, url, role_id) VALUES (:http_method, :url, :role_id)", nativeQuery = true)
+//    void addPermission(String http_method, String url, Long role_id);
 }

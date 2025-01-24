@@ -27,4 +27,19 @@ public class PermissionService {
     public List<PermissionEntity> getRolePermissions(Long roleId) {
         return permissionRepository.getRolePermissions(roleId);
     }
+
+    public void updateRolePermissions(int roleId, List<String> permissions) {
+        permissionRepository.deletePermissionsByRole(roleId);
+        for (String permissionId : permissions) {
+            permissionRepository.associatePermissionToRole(Long.valueOf(permissionId), Long.valueOf(roleId));
+        }
+    }
+
+    public void deletePermission(Long permissionId) {
+        permissionRepository.deletePermissionById(permissionId);
+    }
+
+//    public void addPermission(String http_method, String url, Long role_id) {
+//        permissionRepository.addPermission(http_method, url, role_id);
+//    }
 }
