@@ -26,4 +26,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query(value = "SELECT role_id FROM app_users_roles WHERE app_user_id=:id", nativeQuery = true)
     Iterable<Long> findAdminRoles(Long id);
+
+    @Query(value = "SELECT role_id FROM app_users_roles WHERE app_user_id=:id", nativeQuery = true)
+    List<String> findRolesByUserId(Long id);
 }

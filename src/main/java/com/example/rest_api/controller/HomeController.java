@@ -5,14 +5,19 @@ import com.example.rest_api.database.users.model.UserEntity;
 import com.example.rest_api.database.users.repository.UserRepository;
 import com.example.rest_api.security.AuthenticatedUser;
 import com.example.rest_api.service.AlbumService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -23,6 +28,9 @@ import java.util.Map;
 @RequestMapping()
 public class HomeController {
     UserRepository userRepository;
+
+    @Autowired
+    UserRepository roleRepository;
     private Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired
@@ -86,7 +94,7 @@ public class HomeController {
 
         albumService.createAlbum(albumName, user);
 
-        return "Album created successfully!";
+        return "Album created successfully! You need to logout to see it!";
     }
 
     @DeleteMapping("/home/{albumId}")
