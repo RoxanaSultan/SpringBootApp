@@ -106,4 +106,8 @@ public class UserService extends OidcUserService implements UserDetailsService {
     public UserEntity findById(Long userId) {
         return userRepository.findById(userId).orElse(null);
     }
+
+    public Optional<UserEntity> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

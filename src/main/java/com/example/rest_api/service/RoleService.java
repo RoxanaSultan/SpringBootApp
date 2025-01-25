@@ -63,6 +63,7 @@ public class RoleService {
     public void deleteRoleById(Long id) {
         permissionRepository.deletePermissionsForRole(id);
         roleRepository.deleteAssociatedRole(Math.toIntExact(id));
-        roleRepository.deleteById(id);
+//        roleRepository.deleteById(id);
+        roleRepository.deleteRoleById(id);
     }
 }

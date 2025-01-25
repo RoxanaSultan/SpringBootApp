@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("email")
                         .successHandler(successHandler)
+                        .failureUrl("/login?error=true")
                         //.defaultSuccessUrl("/home")
                         .permitAll())
                 .logout(logout -> logout

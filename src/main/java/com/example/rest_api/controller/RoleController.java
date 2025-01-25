@@ -34,8 +34,6 @@ public class RoleController {
     @GetMapping("/get_permissions/{role_id}")
     public ResponseEntity<Map<String, Object>> getPermissions(@PathVariable Long role_id) {
         List<PermissionEntity> rolePermissions = permissionService.getRolePermissions(role_id);
-
-        // Maparea entităților PermissionEntity în DTO-uri
         List<PermissionDTO> rolePermissionsDTO = rolePermissions.stream()
                 .map(permission -> new PermissionDTO(permission.getId(), permission.getHttp_method(), permission.getUrl()))
                 .toList();

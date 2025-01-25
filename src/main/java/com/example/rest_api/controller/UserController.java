@@ -37,7 +37,6 @@ public class UserController {
         List<RoleEntity> allRoles = roleService.getAllRoles();
         List<RoleEntity> userRoles = roleService.getUserRoles(id);
 
-        // Maparea entităților RoleEntity în DTO-uri
         List<RoleDTO> allRolesDTO = allRoles.stream()
                 .map(role -> new RoleDTO(role.getId(), role.getName()))
                 .toList();
@@ -46,7 +45,6 @@ public class UserController {
                 .map(role -> new RoleDTO(role.getId(), role.getName()))
                 .toList();
 
-        // Construirea răspunsului
         Map<String, Object> response = new HashMap<>();
         response.put("allRoles", allRolesDTO);
         response.put("userRoles", userRolesDTO);

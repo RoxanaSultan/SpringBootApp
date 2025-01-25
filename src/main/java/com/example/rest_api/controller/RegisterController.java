@@ -35,27 +35,28 @@ public class RegisterController {
     }
 
     @GetMapping()
-    public String loadRegisterPage(Model model){
+    public String loadRegisterPage(Model model) {
         model.addAttribute("user", new UserEntity());
         return "authentication/register";
     }
 
     @PostMapping()
-    public String register(@ModelAttribute("user") UserEntity user, BindingResult bindingResult){
+    public String register(@ModelAttribute("user") UserEntity user, BindingResult bindingResult) {
         userValidatorService.validate(user, bindingResult);
 
         if (bindingResult.hasErrors())
             return "authentication/register";
 
         if (userService.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already registered!");
+            bindingResult.rejectValue("email", "user.email.exists", "Email already registered");
+            return "authentication/register";
         }
 
         user.setEmail(user.getEmail());
         user.setUsername(user.getUsername());
         user.setIsOAuthAccount(false); // Classic registration
 
-        Optional<RoleEntity> optionalRole = roleService.findByName(Role.DEFAULT.name());
+        Optional<RoleEntity> optionalRole = roleService.findByName(Role.USER.name());
         optionalRole.ifPresent(user::addRole);
 
         userService.save(user);

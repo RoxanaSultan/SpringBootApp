@@ -82,52 +82,93 @@
             border-radius: 0.375rem;
             font-size: 16px;
         }
+        /*.modal {*/
+        /*     display: none;*/
+        /*     position: fixed;*/
+        /*     z-index: 1;*/
+        /*     left: 0;*/
+        /*     top: 0;*/
+        /*     width: 100%;*/
+        /*     height: 100%;*/
+        /*     background-color: rgba(0, 0, 0, 0.5);*/
+        /*     align-items: center;*/
+        /*     justify-content: center;*/
+        /* }*/
+
+        /*.popup-error .modal-content,*/
+        /*.popup-success .modal-content {*/
+        /*    background-color: #fff;*/
+        /*    padding: 20px;*/
+        /*    border-radius: 5px;*/
+        /*    text-align: center;*/
+        /*    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+        /*    width: 300px;*/
+        /*    margin: 0 auto;*/
+        /*}*/
+
+        /*.popup-error p {*/
+        /*    color: red;*/
+        /*}*/
+
+        /*.popup-success p {*/
+        /*    color: green;*/
+        /*}*/
+
     </style>
 </head>
 <body>
+<!--<div th:if="${error}">-->
+<!--    <div class="modal popup-error">-->
+<!--        <div class="modal-content">-->
+<!--            <p th:text="${error}" style="color: red;"></p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div th:if="${success}">-->
+<!--    <div class="modal popup-success">-->
+<!--        <div class="modal-content">-->
+<!--            <p th:text="${success}" style="color: green;"></p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
 <div layout:fragment="content">
-    <!-- Search Bar -->
+    <span style="color: red; font-size: small" th:if="${error}" th:text="${error}"></span>
+    <span style="color: green; font-size: small" th:if="${success}" th:text="${success}"></span>
     <input type="text" id="searchBar" class="search-bar" placeholder="Search albums..." onkeyup="searchAlbums()">
     <br>
 
-    <!-- Create Album Button -->
     <button onclick="openModal()" class="create-button">Create Album</button>
     <br><br>
 
-    <!-- Album List -->
-<!--    <ul id="albumList">-->
-<!--        <li th:each="album : ${albums}">-->
-<!--            <div class="card" th:onclick="'window.location.href=\'/photos/' + ${album.id} + '\''">-->
-<!--                <div class="card-body">-->
-<!--                    <h5 class="card-title" th:text="${album.name}">Album Name</h5>-->
-<!--                    &lt;!&ndash; Delete Button &ndash;&gt;-->
-<!--                    <button th:if="${canDelete}" th:attr="onclick='deleteAlbum(event, ' + ${album.id} + ')'" class="delete-btn">Delete</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </li>-->
-<!--    </ul>-->
-
-    <!-- Album List -->
     <ul id="albumList">
         <li th:each="album, iterStat : ${albums}">
             <div class="card" th:attr="data-url='/photos', data-album-name=${album.name}" onclick="redirectToAlbum(this)">
             <div class="card-body">
                     <h5 class="card-title" th:text="${album.name}">Album Name</h5>
-                    <!-- Delete Button -->
                     <button th:if="${canDeleteList[iterStat.index]}" th:attr="onclick='deleteAlbum(event, ' + ${album.id} + ')'" class="delete-btn">Delete</button>
                 </div>
             </div>
         </li>
     </ul>
 
+    <!--    <div id="albumModal">-->
+<!--        <div class="modal-content">-->
+<!--            <h3>Create New Album</h3>-->
+<!--            <input type="text" id="albumName" placeholder="Enter album name">-->
+<!--            <button onclick="createAlbum()" class="create-button">Create Album</button>-->
+<!--            <button onclick="closeModal()" class="delete-btn">Cancel</button>-->
+<!--        </div>-->
+<!--    </div>-->
 
-    <!-- Modal for Creating Album -->
     <div id="albumModal">
         <div class="modal-content">
             <h3>Create New Album</h3>
-            <input type="text" id="albumName" placeholder="Enter album name">
-            <button onclick="createAlbum()" class="create-button">Create Album</button>
-            <button onclick="closeModal()" class="delete-btn">Cancel</button>
+            <form id="albumForm" action="/home" method="POST">
+                <input type="text" id="albumName" name="name" placeholder="Enter album name" required>
+                <button type="submit" class="create-button">Create Album</button>
+                <button type="button" onclick="closeModal()" class="delete-btn">Cancel</button>
+            </form>
         </div>
     </div>
 
@@ -138,13 +179,12 @@
             const albumList = document.getElementById('albumList');
             const albums = albumList.getElementsByClassName('card');
 
-            // Iterate through all albums
             for (let i = 0; i < albums.length; i++) {
                 const albumName = albums[i].getAttribute('data-album-name').toLowerCase();
                 if (albumName.includes(filter)) {
-                    albums[i].style.display = ''; // Show album if it matches
+                    albums[i].style.display = '';
                 } else {
-                    albums[i].style.display = 'none'; // Hide album if it doesn't match
+                    albums[i].style.display = 'none';
                 }
             }
         }
@@ -167,7 +207,6 @@
         function createAlbum() {
             const albumName = document.getElementById('albumName').value;
             if (albumName) {
-                // Send the album name to the server using AJAX
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', '/home', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
