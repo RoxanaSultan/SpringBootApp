@@ -40,12 +40,12 @@ public class UserValidatorService implements Validator {
         Boolean arePasswordsTheSame = user.getPassword().equals(user.getRepeatPassword());
 
         if(!isValidUserLength)
-            errors.rejectValue("username", "user.isValidUserLength");
+            errors.rejectValue("username", "user.isValidUserLength", "Username must be between 3 and 32 characters");
         if(!isValidEmail)
-            errors.rejectValue("email", "user.isValidEmail");
+            errors.rejectValue("email", "user.isValidEmail", "Email is not valid");
         if(!isValidPassword)
-            errors.rejectValue("password", "user.isValidPassword");
+            errors.rejectValue("password", "user.isValidPassword", "Password is not valid");
         if(!arePasswordsTheSame)
-            errors.rejectValue("repeatPassword", "user.isPasswordTheSame");
+            errors.rejectValue("repeatPassword", "user.isPasswordTheSame", "Passwords do not match");
     }
 }
