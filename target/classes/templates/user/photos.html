@@ -87,9 +87,8 @@
     <ul id="albumPhotosList">
         <li th:each="photo : ${photos}">
             <div class="card-body">
-                <img th:src="@{/photos/get/{id}(id=${photo.id})}" alt="Photo" class="card-img-top"/>
+                <img th:src="@{/photos/{albumName}/get/{photoId}(albumName=${albumName}, photoId=${photo.id})}" />
                 <button th:if="${canPostPatch}" class="delete-button" th:attr="onclick='deletePhoto(' + ${photo.id} + ')'">Delete</button>
-<!--                <button class="delete-button" onclick="deletePhoto(' + ${photo.id} + ')">Delete</button>-->
             </div>
         </li>
     </ul>
@@ -106,6 +105,10 @@
     </div>
 
     <script>
+        // function getAlbumName() {
+        //     const path = window.location.pathname;
+        //     return path.split('/')[2];
+        // }
         function openAddPhotoModal() {
             document.getElementById('addPhotoModal').style.display = 'flex';
         }
@@ -146,8 +149,8 @@
             const formData = new FormData();
             formData.append('albumName', albumName);
             if (confirm('Are you sure you want to delete this photo?')) {
-                fetch('/photos/' + albumName+ '/' + photoId, {
-                    method: 'DELETE'
+                fetch('/photos/' + albumName+ '/delete/' + photoId, {
+                    method: 'POST'
                 }).then(response => {
                     if (response.ok) {
                         alert('Photo deleted successfully');

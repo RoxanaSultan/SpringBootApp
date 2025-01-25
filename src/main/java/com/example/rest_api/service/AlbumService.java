@@ -71,16 +71,16 @@ public class AlbumService {
             permission.setHttp_method(method);
             permission.setRole(adminRole);
             if (method.equals("DELETE")) {
-                permission.setUrl("/photos/" + albumName + "/**");
-            } else {
                 permission.setUrl("/photos/" + albumName);
+            } else {
+                permission.setUrl("/photos/" + albumName + "/**");
             }
             permissionRepository.save(permission);
         }
 
         permission = new PermissionEntity();
         permission.setHttp_method("GET");
-        permission.setUrl("/photos/" + albumName);
+        permission.setUrl("/photos/" + albumName + "/**");
         permission.setRole(userRole);
         permissionRepository.save(permission);
     }

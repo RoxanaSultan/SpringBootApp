@@ -51,6 +51,8 @@ public class PhotoController {
             model.addAttribute("canDelete", false);
         }
 
+        model.addAttribute("albumName", albumName);
+
         return "/user/photos";
     }
 
@@ -64,23 +66,21 @@ public class PhotoController {
         return "Photo added successfully";
     }
 
-    @GetMapping("/photos/get/{photoId}")
-    public ResponseEntity<byte[]> getImage(@PathVariable("photoId") int photoId) {
+    @GetMapping("/photos/{albumName}/get/{photoId}")
+    public ResponseEntity<byte[]> getImage(@PathVariable("albumName") String albumName, @PathVariable("photoId") int photoId) {
         PhotoEntity photo = photoService.getPhotoById(photoId);
         if (photo != null && photo.getImageData() != null) {
             return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)  // sau PNG în funcție de format
+                    .contentType(MediaType.IMAGE_JPEG)
                     .body(photo.getImageData());
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-
-    // DELETE: Șterge o poză din album
-    @DeleteMapping("/photos/{albumName}/{id}")
+    @PostMapping("/photos/{albumName}/delete/{id}")
     @ResponseBody
-    public String deletePhoto(@PathVariable("id") int id) {
+    public String deletePhoto(@PathVariable("albumName") String albumName, @PathVariable("id") int id) {
         photoService.deletePhoto(id);
         return "Photo deleted successfully";
     }
