@@ -80,10 +80,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <!-- Add Photo Button -->
     <button th:if="${canPostPatch}" class="add-photo-btn" th:attr="onclick='openAddPhotoModal()'">Add Photo</button>
 
-    <!-- Album Photos List -->
     <ul id="albumPhotosList">
         <li th:each="photo : ${photos}">
             <div class="card-body">
@@ -93,7 +91,6 @@
         </li>
     </ul>
 
-    <!-- Modal for Adding Photo -->
     <div id="addPhotoModal">
         <div class="modal-content">
             <h3>Add New Photo</h3>

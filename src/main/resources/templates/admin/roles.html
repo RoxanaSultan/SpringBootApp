@@ -84,16 +84,12 @@
     <div id="permissionsModal">
         <div class="modal-content">
             <h2>Permissions</h2>
-            <div id="permissionsList">
-                <!-- Permissions will be inserted here with delete buttons -->
-            </div>
+            <div id="permissionsList"></div>
             <br>
             <h3>Add new permission</h3>
             <br>
             <div>
-                <select id="httpMethodSelect">
-                    <!-- Options for HTTP methods will be added here -->
-                </select>
+                <select id="httpMethodSelect"></select>
                 <input type="text" id="urlInput" placeholder="Enter URL" />
                 <button type="button" onclick="addPermission()" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none">
                     Add Permission
@@ -188,15 +184,15 @@
                     if (!response.ok) {
                         throw new Error('Failed to add permission: ' + response.statusText);
                     }
-                    return response.text(); // Așteaptă un răspuns de tip text
+                    return response.text();
                 })
                 .then(data => {
                     console.log('Permission added successfully:', data);
-                    alert(data); // Afișează mesajul de succes
+                    alert(data);
                 })
                 .catch(error => {
                     console.error('Error adding permission:', error);
-                    alert(error.message); // Afișează eroarea în alert
+                    alert(error.message);
                 });
 
             document.getElementById('urlInput').value = '';
